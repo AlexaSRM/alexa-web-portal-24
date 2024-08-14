@@ -1,7 +1,7 @@
 import AboutUs from "@/components/home/about-us";
 import Domains from "@/components/home/domains";
 import Landing from "@/components/home/landing";
-import OurEvents from "@/components/home/our-events";
+import CustomCarousel from "@/components/CustomCarousel";
 import { getAllEvents } from "@/sanity/data/home-data";
 
 export default async function Home() {
@@ -11,7 +11,7 @@ export default async function Home() {
       <Landing />
       <AboutUs />
       <Domains />
-      <OurEvents events={events}/>
+      <CustomCarousel event={events}/>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import EventCard from "@/components/events/event-card";
+import { CustomCarousel } from "@/components/CustomCarousel";
 import SlideShow from "@/components/events/slide-show";
 import { BackgroundGradient } from "@/components/ui/background-gradient";
 import Image from "next/image";
@@ -32,12 +32,10 @@ const Events = async ({}: Props) => {
         builds a strong tech community.
       </h2>
       <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {eventList.map((event, idx: number) => (
-          <EventCard key={idx} event={event} />
-        ))}
+        <CustomCarousel events={eventList} />
       </div>
       <div className="w-full flex mt-10 mb-5 text-white justify-center font-bold text-3xl md:text-5xl items-center">
-        <span>Our Gallary</span>
+        <span>Our Gallery</span>
         <span className="bg-gradient-to-r from-[#31B553] to-[#0AA294] bg-clip-text text-transparent ml-2">
           .
         </span>
@@ -46,50 +44,5 @@ const Events = async ({}: Props) => {
     </div>
   );
 };
-
-// const eventList = [
-//   {
-//     title: "Make things float in air",
-//     slug: "make-things-float-in-air",
-//     description: "Hover over this card to unleash the power of CSS perspective",
-//     image: "/events/event.png",
-//   },
-//   {
-//     title: "Make things float in air",
-//     slug: "make-things-float-in-air",
-//     description: "Hover over this card to unleash the power of CSS perspective",
-//     image: "/events/event.png",
-//   },
-//   {
-//     title: "Make things float in air",
-//     slug: "make-things-float-in-air",
-//     description: "Hover over this card to unleash the power of CSS perspective",
-//     image: "/events/event.png",
-//   },
-//   {
-//     title: "Make things float in air",
-//     slug: "make-things-float-in-air",
-//     description: "Hover over this card to unleash the power of CSS perspective",
-//     image: "/events/event.png",
-//   },
-//   {
-//     title: "Make things float in air",
-//     slug: "make-things-float-in-air",
-//     description: "Hover over this card to unleash the power of CSS perspective",
-//     image: "/events/event.png",
-//   },
-//   {
-//     title: "Make things float in air",
-//     slug: "make-things-float-in-air",
-//     description: "Hover over this card to unleash the power of CSS perspective",
-//     image: "/events/event.png",
-//   },
-//   {
-//     title: "Make things float in air",
-//     slug: "make-things-float-in-air",
-//     description: "Hover over this card to unleash the power of CSS perspective",
-//     image: "/events/event.png",
-//   },
-// ];
 
 export default Events;
