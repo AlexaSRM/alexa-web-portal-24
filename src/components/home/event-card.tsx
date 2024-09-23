@@ -34,14 +34,14 @@ export const EventCard = ({
           height="1000"
           src={imageUrl}
         />
-        <h1
+        {/* <h1
           className={cn(
             "absolute bottom-6 left-6 z-40 text-4xl font-bold bg-gradient-to-r from-[#31B553] to-[#0AA294] bg-clip-text text-transparent group-hover:scale-125",
             titleClassName
           )}
         >
           {title}
-        </h1>
+        </h1> */}
       </div>
     </div>
   );
