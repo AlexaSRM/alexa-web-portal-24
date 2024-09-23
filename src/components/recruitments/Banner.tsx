@@ -4,13 +4,13 @@ type Props = {};
 
 const Banner = (props: Props) => {
   return (
-    <div className="flex justify-between items-center px-10 py-20 bg-black h-[70vh]">
+    <div className="flex justify-between items-center px-10 py-20 bg-black h-[calc(100vh-80px)]">
       {/* Left side: Text content */}
       <div className="flex flex-col justify-center">
-        <h1 className="text-8xl font-extrabold text-[#00bcd4]">
+        <h1 className="text-8xl font-extrabold bg-gradient-to-r from-[#00B5FF] to-[#00CDC1] bg-clip-text text-transparent">
           Recruitments <span className="text-white">‘24</span>
         </h1>
-        <p className="text-white text-xl mt-5 max-w-[600px]">
+        <p className="text-white text-2xl mt-5 max-w-[600px]">
           The official developers’ club of Amazon Alexa at SRMIST is now open to recruiting first and second year students!
         </p>
         <a

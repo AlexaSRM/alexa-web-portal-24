@@ -1,43 +1,40 @@
-import React from 'react';
-import { FaInstagram, FaEnvelope } from 'react-icons/fa';
+import React from "react";
 
-const Footer: React.FC = () => {
+type Props = {};
+
+const Footer = (props: Props) => {
   return (
-    (
-      <footer className="bg-black text-white py-8">
-        <div className="container mx-auto flex flex-col md:flex-row justify-around items-center px-8 md:px-16">
-
-          {/* Left Side - Embrace the FUTURE */}
-          <div className="text-left mb-6 md:mb-0">
-            <h2 className="text-2xl font-semibold leading-tight">
-              Embrace the <br />
-              <span className="text-blue-400 text-[50px]">FUTURE.</span>
-            </h2>
-          </div>
-
-          {/* Right Side - Contact Information */}
-          <div className="text-left md:text-right">
-            <p className="text-gray-400 mb-4">Got any queries? Contact us at</p>
-
-            <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:items-center md:space-x-6">
-              {/* Instagram */}
-              <div className="flex items-center space-x-2">
-                <FaInstagram className="text-blue-400" />
-                <span>@alexadevsrm</span>
-              </div>
-
-              {/* Email */}
-              <div className="flex items-center space-x-2">
-                <FaEnvelope className="text-blue-400" />
-                <a href="mailto:hello@alexadevsrm.com" className="hover:text-blue-400">
-                  hello@alexadevsrm.com
-                </a>
-              </div>
-            </div>
-          </div>
+    <div className="bg-black py-10 px-20 mt-12">
+      {/* Top blue line */}
+      <div className="border-t-4 border-[#00B5FF] mb-10"></div>
+      
+      <div className="flex justify-between items-center">
+        {/* Left side: Text content */}
+        <div className="text-white ml-30">
+          <h1 className="text-4xl font-bold">
+          Embrace the <br />
+          <span className="bg-gradient-to-r from-[#00B5FF] to-[#00CDC1] bg-clip-text text-transparent text-[50px]">FUTURE.</span>
+          </h1>
         </div>
-      </footer>
-    )
+
+        {/* Right side: Contact info */}
+        <div className="text-white text-[20px] text-right mr-30">
+          <p className="mb-4">Got any queries? Contact us at</p>
+          <p className="mb-3">
+            <a href="https://www.instagram.com/alexadevsrm/" className="flex items-center space-x-2">
+              <img src="/recruitment/insta.png" alt="Instagram" className="w-6 h-6" />
+              <span>alexadevsrm</span>
+            </a>
+          </p>
+          <p className="mb-3">
+            <a href="mailto:alexadevsrm@gmail.com" className="flex items-center space-x-2">
+              <img src="/recruitment/mail.png" alt="Email" className="w-6 h-6" />
+              <span>hello@alexadevsrm.com</span>
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
   );
 };
 
