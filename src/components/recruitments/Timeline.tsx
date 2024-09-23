@@ -4,7 +4,7 @@ type Props = {};
 
 const Timeline = (props: Props) => {
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-black px-10 py-20">
+    <div id="timeline" className="flex flex-col items-center justify-center h-screen bg-black px-10 py-20">
       {/* Header */}
       <h1 className="text-8xl font-bold text-white mb-12">
         Road to <span className="bg-gradient-to-r from-[#00B5FF] to-[#00CDC1] bg-clip-text text-transparent">Alexa</span>

@@ -4,7 +4,7 @@ type Props = {};
 
 const Domains = (props: Props) => {
   return (
-    <div className="flex flex-col items-center py-20 text-white">
+    <div id="domain" className="flex flex-col items-center py-20 text-white">
       <h1 className="text-8xl font-bold mb-16 bg-gradient-to-r from-[#00B5FF] to-[#00CDC1] bg-clip-text text-transparent mb-4"><span className="text-white">Our</span> Domains</h1>
 
       {/* Main Container for All Domains */}

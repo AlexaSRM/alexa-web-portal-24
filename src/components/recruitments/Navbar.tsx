@@ -16,7 +16,7 @@ const Navbar = (props: Props) => {
     <ul className="flex space-x-8 list-none">
       <li>
         <a
-          href="/"
+          href="#home"
           className="text-[#00bcd4] text-[20px] no-underline transition-colors duration-300 hover:text-[#00bcd4]"
         >
           Home
@@ -24,7 +24,7 @@ const Navbar = (props: Props) => {
       </li>
       <li>
         <a
-          href="/domain"
+          href="#domain"
           className="text-[#bbb] text-[20px] no-underline transition-colors duration-300 hover:text-[#00bcd4]"
         >
           Domain
@@ -32,7 +32,7 @@ const Navbar = (props: Props) => {
       </li>
       <li>
         <a
-          href="/roadmap"
+          href="#timeline"
           className="text-[#bbb] text-[20px] no-underline transition-colors duration-300 hover:text-[#00bcd4]"
         >
           Roadmap
@@ -40,8 +40,10 @@ const Navbar = (props: Props) => {
       </li>
     </ul>
     <a
-      href="/register"
-      className="bg-gradient-to-r from-[#00B5FF] to-[#00CDC1] text-white py-2 px-6 rounded-full text-[20px] font-bold no-underline transition-all duration-300 hover:bg-gradient-to-r hover:from-[#00CDC1] hover:to-[#00B5FF]"
+      href="https://lu.ma/event/evt-EQTXfYbxktqOuHt"
+      data-luma-action="checkout"
+      data-luma-event-id="evt-EQTXfYbxktqOuHt"
+      className="luma-checkout--button bg-gradient-to-r from-[#00B5FF] to-[#00CDC1] text-white py-2 px-6 rounded-full text-[20px] font-bold no-underline transition-all duration-300 hover:bg-gradient-to-r hover:from-[#00CDC1] hover:to-[#00B5FF]"
     >
       Apply Now
     </a>
