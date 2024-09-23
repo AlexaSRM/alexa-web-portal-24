@@ -1,18 +1,53 @@
-import React from 'react';
+import React from "react";
 
-const Navbar: React.FC = () => {
+type Props = {};
+
+const Navbar = (props: Props) => {
   return (
-    <nav className="flex justify-between items-center py-4 px-8 bg-black text-white">
-      <div className="text-2xl font-bold">Alexa Developers SRM</div>
-      <ul className="flex space-x-6">
-        <li><a href="#home" className="hover:text-gray-400">Home</a></li>
-        <li><a href="#domains" className="hover:text-gray-400">Domains</a></li>
-        <li><a href="#roadmap" className="hover:text-gray-400">Roadmap</a></li>
-      </ul>
-      <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition">
-        Register Now
-      </button>
-    </nav>
+    <nav className="flex justify-between items-center px-10 py-5 bg-black">
+  <div className="flex items-center">
+    <img
+      src="/recruitment/AlexaLogo.png"
+      alt="Alexa Developers SRM"
+      className="w-[300px] mr-5"
+    />
+  </div>
+  <div className="flex items-center space-x-8">
+    <ul className="flex space-x-8 list-none">
+      <li>
+        <a
+          href="/"
+          className="text-[#00bcd4] text-[16px] no-underline transition-colors duration-300 hover:text-[#00bcd4]"
+        >
+          Home
+        </a>
+      </li>
+      <li>
+        <a
+          href="/domain"
+          className="text-[#bbb] text-[16px] no-underline transition-colors duration-300 hover:text-[#00bcd4]"
+        >
+          Domain
+        </a>
+      </li>
+      <li>
+        <a
+          href="/roadmap"
+          className="text-[#bbb] text-[16px] no-underline transition-colors duration-300 hover:text-[#00bcd4]"
+        >
+          Roadmap
+        </a>
+      </li>
+    </ul>
+    <a
+      href="/register"
+      className="bg-gradient-to-r from-[#00bcd4] to-[#3bde87] text-white py-2 px-6 rounded-full text-[16px] font-medium no-underline transition-all duration-300 hover:bg-gradient-to-r hover:from-[#3bde87] hover:to-[#00bcd4]"
+    >
+      Apply Now
+    </a>
+  </div>
+</nav>
+
   );
 };
 
