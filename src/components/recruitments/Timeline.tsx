@@ -10,7 +10,7 @@ const Timeline: React.FC = () => {
   ];
 
   return (
-    <section id="roadmap" className="py-16 bg-gray-900 text-white">
+    <section id="roadmap" className="py-16  text-white">
       <h2 className="text-4xl font-bold text-center mb-12">Road to Alexa</h2>
       <div className="relative max-w-4xl mx-auto">
         <div className="absolute inset-0 w-1 bg-gray-700 left-1/2 transform -translate-x-1/2"></div>

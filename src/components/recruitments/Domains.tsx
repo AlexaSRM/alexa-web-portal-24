@@ -4,7 +4,7 @@ type Props = {};
 
 const Domains = (props: Props) => {
   return (
-    <div className="flex flex-col items-center py-20 bg-[#1e1e1e] text-white">
+    <div className="flex flex-col items-center py-20  text-white">
       <h1 className="text-4xl font-bold mb-16 text-[#6ac1ff]">Our Domains</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-4/5 max-w-[1200px]">
