@@ -1,14 +1,35 @@
-import React from 'react';
+import React from "react";
 
-const Banner: React.FC = () => {
+type Props = {};
+
+const Banner = (props: Props) => {
   return (
-    <section className="text-center bg-cover bg-center py-24 text-white" style={{ backgroundImage: 'url("/path-to-banner-image.jpg")' }}>
-      <h1 className="text-5xl font-bold mb-4">Recruitments '24</h1>
-      <p className="text-lg mb-8">The official developers' club of Amazon Alexa at SRMIST is now open for recruiting!</p>
-      <button className="bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 transition">
-        Register Now
-      </button>
-    </section>
+    <div className="flex justify-between items-center px-10 py-20 bg-black h-[70vh]">
+      {/* Left side: Text content */}
+      <div className="flex flex-col justify-center">
+        <h1 className="text-8xl font-extrabold text-[#00bcd4]">
+          Recruitments <span className="text-white">‘24</span>
+        </h1>
+        <p className="text-white text-xl mt-5 max-w-[600px]">
+          The official developers’ club of Amazon Alexa at SRMIST is now open to recruiting first and second year students!
+        </p>
+        <a
+          href="/register"
+          className="mt-10 max-w-[200px] bg-gradient-to-r from-[#00B5FF] to-[#00CDC1] text-white py-4 px-10 rounded-full text-[20px] font-bold no-underline transition-all duration-300 hover:bg-gradient-to-r hover:from-[#00CDC1] hover:to-[#00B5FF] flex justify-center items-center"
+        >
+          Apply Now
+        </a>
+      </div>
+
+      {/* Right side: Background image */}
+      <div className="relative w-[400px] h-[400px]">
+        <img
+          src="/recruitment/Vector.png"
+          alt="Alexa Background"
+          className="absolute right-0 w-full h-full object-contain"
+        />
+      </div>
+    </div>
   );
 };
 

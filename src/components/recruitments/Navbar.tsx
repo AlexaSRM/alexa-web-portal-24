@@ -17,7 +17,7 @@ const Navbar = (props: Props) => {
       <li>
         <a
           href="/"
-          className="text-[#00bcd4] text-[16px] no-underline transition-colors duration-300 hover:text-[#00bcd4]"
+          className="text-[#00bcd4] text-[20px] no-underline transition-colors duration-300 hover:text-[#00bcd4]"
         >
           Home
         </a>
@@ -25,7 +25,7 @@ const Navbar = (props: Props) => {
       <li>
         <a
           href="/domain"
-          className="text-[#bbb] text-[16px] no-underline transition-colors duration-300 hover:text-[#00bcd4]"
+          className="text-[#bbb] text-[20px] no-underline transition-colors duration-300 hover:text-[#00bcd4]"
         >
           Domain
         </a>
@@ -33,7 +33,7 @@ const Navbar = (props: Props) => {
       <li>
         <a
           href="/roadmap"
-          className="text-[#bbb] text-[16px] no-underline transition-colors duration-300 hover:text-[#00bcd4]"
+          className="text-[#bbb] text-[20px] no-underline transition-colors duration-300 hover:text-[#00bcd4]"
         >
           Roadmap
         </a>
@@ -41,7 +41,7 @@ const Navbar = (props: Props) => {
     </ul>
     <a
       href="/register"
-      className="bg-gradient-to-r from-[#00bcd4] to-[#3bde87] text-white py-2 px-6 rounded-full text-[16px] font-medium no-underline transition-all duration-300 hover:bg-gradient-to-r hover:from-[#3bde87] hover:to-[#00bcd4]"
+      className="bg-gradient-to-r from-[#00B5FF] to-[#00CDC1] text-white py-2 px-6 rounded-full text-[20px] font-bold no-underline transition-all duration-300 hover:bg-gradient-to-r hover:from-[#00CDC1] hover:to-[#00B5FF]"
     >
       Apply Now
     </a>
