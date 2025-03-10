@@ -15,8 +15,8 @@ export default function Hackathon() {
       <About />
       <Tracks />
       <Details />
-      {/* <TeamDetails /> */}
-      <ComingSoon />
+      <TeamDetails />
+      {/* <ComingSoon /> */}
       <Footer />
     </div>
   )

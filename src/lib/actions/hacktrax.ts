@@ -148,27 +148,27 @@ export async function registerTeam(prevState: any, formData: FormData) {
         };
 
         // Call the API endpoint
-        const response = await fetch("https://api.example.com/register-team", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-            // Next.js server components can use this option
-            cache: "no-store"
-        });
+        // const response = await fetch("https://api.example.com/register-team", {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify(payload),
+        //     // Next.js server components can use this option
+        //     cache: "no-store"
+        // });
         // sample response: { success: true, message: "Your team has been successfully registered!", data: { teamId: "1234" } }
         
-        if (!response.ok) {
-            const errorData = await response.json();
-            return {
-                success: false,
-                message: errorData.message || "Failed to register team. Please try again."
-            };
-        }
+        // if (!response.ok) {
+        //     const errorData = await response.json();
+        //     return {
+        //         success: false,
+        //         message: errorData.message || "Failed to register team. Please try again."
+        //     };
+        // }
 
-        const data = await response.json();
-
+        // const data = await response.json();
+        const data = { teamId: "1234" };
         // Revalidate the page to show the latest data
         revalidatePath("/team-details");
 
