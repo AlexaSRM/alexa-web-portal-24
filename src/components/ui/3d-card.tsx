@@ -9,6 +9,7 @@ import React, {
   useEffect,
 } from "react";
 
+// Context to manage whether the mouse is hovering over a card
 const MouseEnterContext = createContext<
   [boolean, React.Dispatch<React.SetStateAction<boolean>>] | undefined
 >(undefined);
@@ -17,10 +18,14 @@ export const CardContainer = ({
   children,
   className,
   containerClassName,
+  onMouseEnter, // Highlight: Added prop to handle mouse enter
+  onMouseLeave, // Highlight: Added prop to handle mouse leave
 }: {
   children?: React.ReactNode;
   className?: string;
   containerClassName?: string;
+  onMouseEnter?: () => void; // Highlight: Added prop to handle mouse enter
+  onMouseLeave?: () => void; // Highlight: Added prop to handle mouse leave
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMouseEntered, setIsMouseEntered] = useState(false);
@@ -36,14 +41,17 @@ export const CardContainer = ({
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsMouseEntered(true);
+    if (onMouseEnter) onMouseEnter(); // Highlight: Trigger the passed onMouseEnter callback
     if (!containerRef.current) return;
   };
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (onMouseLeave) onMouseLeave(); // Highlight: Trigger the passed onMouseLeave callback
     if (!containerRef.current) return;
     setIsMouseEntered(false);
     containerRef.current.style.transform = `rotateY(0deg) rotateX(0deg)`;
   };
+
   return (
     <MouseEnterContext.Provider value={[isMouseEntered, setIsMouseEntered]}>
       <div
@@ -84,10 +92,10 @@ export const CardBody = ({
 }) => {
   return (
     <div
-    className={cn(
-      "h-80 w-80 [transform-style:preserve-3d]  [&>*]:[transform-style:preserve-3d] shadow-2xl border-2 text-justify border-gray-800",
-      className
-    )}
+      className={cn(
+        "h-80 w-80 [transform-style:preserve-3d]  [&>*]:[transform-style:preserve-3d] shadow-2xl border-2 text-justify border-gray-800",
+        className
+      )}
     >
       {children}
     </div>
