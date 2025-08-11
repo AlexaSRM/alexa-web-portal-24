@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/components/ui/use-toast";
-import { registerForDebug, IndividualRegistration, ApiResponse } from "@/lib/api";
+import { registerForDebug, TeamRegistration, TeamMember, ApiResponse } from "@/lib/api";
 
 const RegisterDebug: React.FC = () => {
   const [mounted, setMounted] = useState(false);
@@ -12,11 +12,15 @@ const RegisterDebug: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<string>("");
   const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
-  const [formData, setFormData] = useState<IndividualRegistration>({
-    name: "",
-    registrationNumber: "",
-    srmMailId: "",
-    phoneNumber: ""
+  const [formData, setFormData] = useState<TeamRegistration>({
+    teamName: "",
+    teamMembers: [
+      { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" },
+      { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" },
+      { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" },
+      { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" },
+      { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" }
+    ]
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
@@ -25,18 +29,33 @@ const RegisterDebug: React.FC = () => {
     setMounted(true);
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleTeamNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      teamName: e.target.value
     }));
     
-    // Clear error when user starts typing
-    if (errors[name]) {
+    if (errors.teamName) {
       setErrors(prev => ({
         ...prev,
-        [name]: ""
+        teamName: ""
+      }));
+    }
+  };
+
+  const handleMemberChange = (index: number, field: keyof TeamMember, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      teamMembers: prev.teamMembers.map((member, i) => 
+        i === index ? { ...member, [field]: value } : member
+      )
+    }));
+    
+    const errorKey = `member${index}${field.charAt(0).toUpperCase() + field.slice(1)}`;
+    if (errors[errorKey]) {
+      setErrors(prev => ({
+        ...prev,
+        [errorKey]: ""
       }));
     }
   };
@@ -48,26 +67,61 @@ const RegisterDebug: React.FC = () => {
     setSubmitSuccess(null);
     setErrors({});
 
+    // Client-side validation
+    const filledMembers = formData.teamMembers.filter(member => 
+      member.name && member.registrationNumber && member.srmMailId && member.phoneNumber
+    );
+
+    if (filledMembers.length < 3) {
+      toast({
+        title: "❌ Team Size Error",
+        description: "You need at least 3 team members to register.",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (filledMembers.length > 5) {
+      toast({
+        title: "❌ Team Size Error",
+        description: "You can have maximum 5 team members.",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Create submission data with only filled members
+    const submissionData: TeamRegistration = {
+      teamName: formData.teamName,
+      teamMembers: filledMembers
+    };
+
     try {
-      const response: ApiResponse = await registerForDebug(formData);
+      const response: ApiResponse = await registerForDebug(submissionData);
       
       if (response.success) {
         setSubmitSuccess(true);
-        setSubmitMessage(response.message || 'Registration successful!');
+        setSubmitMessage(response.message || 'Team registration successful!');
         
         // Show success toast
         toast({
-          title: "🎉 Registration Successful!",
-          description: "You have been successfully registered for Debug!",
+          title: "🎉 Team Registration Successful!",
+          description: "Your team has been successfully registered for DEBUG!",
           variant: "default",
         });
         
         // Reset form on success
         setFormData({
-          name: "",
-          registrationNumber: "",
-          srmMailId: "",
-          phoneNumber: ""
+          teamName: "",
+          teamMembers: [
+            { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" },
+            { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" },
+            { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" },
+            { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" },
+            { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" }
+          ]
         });
       } else {
         setSubmitSuccess(false);
@@ -105,55 +159,127 @@ const RegisterDebug: React.FC = () => {
   };
 
   if (!mounted) return null;
-  
+
   return (
     <>
+      {/* Animated Background Particles */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        {[...Array(50)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-gradient-to-r from-orange-400 to-red-500 rounded-full opacity-30"
+            initial={{
+              x: Math.random() * window.innerWidth,
+              y: Math.random() * window.innerHeight,
+            }}
+            animate={{
+              x: Math.random() * window.innerWidth,
+              y: Math.random() * window.innerHeight,
+              opacity: [0.3, 0.8, 0.3],
+            }}
+            transition={{
+              duration: Math.random() * 20 + 10,
+              repeat: Infinity,
+              ease: "linear",
+              delay: Math.random() * 5,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Floating Geometric Shapes */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute opacity-10"
+            initial={{
+              x: Math.random() * window.innerWidth,
+              y: Math.random() * window.innerHeight,
+              rotate: 0,
+            }}
+            animate={{
+              x: Math.random() * window.innerWidth,
+              y: Math.random() * window.innerHeight,
+              rotate: 360,
+            }}
+            transition={{
+              duration: Math.random() * 30 + 20,
+              repeat: Infinity,
+              ease: "linear",
+              delay: Math.random() * 10,
+            }}
+          >
+            <div className={`w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg transform rotate-45`} />
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Navigation */}
       <motion.nav
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="absolute left-1/2 transform -translate-x-1/2 z-10 w-full max-w-[1500px] px-12"
+        className="absolute left-1/2 transform -translate-x-1/2 z-10 w-full max-w-[1500px] px-6"
         style={{ top: "25px" }}
       >
         <div className="flex justify-between items-center h-[74px]">
           
           <motion.img
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.05, rotate: 5 }}
             transition={{ type: "spring", stiffness: 300 }}
             src="/alexaverse2.0/alexa-logo-navbar.svg"
             alt="Alexa Logo"
-            className="h-10 sm:h-12 w-auto"
+            className="h-10 sm:h-12 w-auto drop-shadow-lg"
           />
 
           <div className="hidden md:flex gap-[32px] items-center">
             <motion.a
-              whileHover={{ scale: 1.05, color: "#a855f7" }}
+              whileHover={{ scale: 1.05, color: "#f97316" }}
               transition={{ type: "spring", stiffness: 300 }}
               href="/alexaverse-v2"
-              className="text-white font-audiowide text-[32px] transition-colors"
+              className="text-white font-audiowide text-[32px] transition-colors relative group"
             >
-              Home
+              <span className="relative z-10">Home</span>
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg opacity-0 group-hover:opacity-20"
+                initial={{ scale: 0 }}
+                whileHover={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              />
             </motion.a>
             <motion.a
-              whileHover={{ scale: 1.05, color: "#a855f7" }}
+              whileHover={{ scale: 1.05, color: "#f97316" }}
               transition={{ type: "spring", stiffness: 300 }}
               href="/alexaverse-v2#events"
-              className="text-white font-audiowide text-[32px] transition-colors"
+              className="text-white font-audiowide text-[32px] transition-colors relative group"
             >
-              Events
+              <span className="relative z-10">Events</span>
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg opacity-0 group-hover:opacity-20"
+                initial={{ scale: 0 }}
+                whileHover={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              />
             </motion.a>
             <motion.a
-              whileHover={{ scale: 1.05, color: "#a855f7" }}
+              whileHover={{ scale: 1.05, color: "#f97316" }}
               transition={{ type: "spring", stiffness: 300 }}
               href="#contact"
-              className="text-white font-audiowide text-[32px] transition-colors"
+              className="text-white font-audiowide text-[32px] transition-colors relative group"
             >
-              Contact Us
+              <span className="relative z-10">Contact Us</span>
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg opacity-0 group-hover:opacity-20"
+                initial={{ scale: 0 }}
+                whileHover={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              />
             </motion.a>
           </div>
 
           <motion.button
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.1, rotate: 90 }}
             whileTap={{ scale: 0.95 }}
             className="md:hidden text-white text-4xl"
             onClick={() => setMobileMenuOpen(true)}
@@ -177,7 +303,7 @@ const RegisterDebug: React.FC = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0 }}
               transition={{ delay: 0.1 }}
-              whileHover={{ scale: 1.1 }}
+              whileHover={{ scale: 1.1, rotate: 90 }}
               whileTap={{ scale: 0.9 }}
               className="absolute top-6 right-6 text-white text-4xl"
               onClick={() => setMobileMenuOpen(false)}
@@ -198,7 +324,7 @@ const RegisterDebug: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ delay: index * 0.1 }}
-                  whileHover={{ scale: 1.05, color: "#a855f7" }}
+                  whileHover={{ scale: 1.05, color: "#f97316" }}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
                   className="text-white font-audiowide text-4xl transition-colors"
@@ -229,21 +355,37 @@ const RegisterDebug: React.FC = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
         id="register-debug"
-        className="w-full min-h-screen text-white flex flex-col items-center justify-center px-4 py-16"
+        className="relative w-full min-h-screen text-white flex flex-col items-center justify-center px-4 py-16 z-10"
       >
+        {/* Animated Background Gradient */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 2 }}
+          className="absolute inset-0 bg-gradient-to-br from-orange-900/20 via-red-900/20 to-amber-900/20"
+          style={{
+            background: `
+              radial-gradient(circle at 20% 80%, rgba(249, 115, 22, 0.3) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(239, 68, 68, 0.3) 0%, transparent 50%),
+              radial-gradient(circle at 40% 40%, rgba(245, 101, 101, 0.2) 0%, transparent 50%),
+              linear-gradient(to bottom right, rgba(154, 52, 18, 0.1), rgba(153, 27, 27, 0.1), rgba(146, 64, 14, 0.1))
+            `
+          }}
+        />
+
         {/* Event display section */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 50, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative max-w-[85rem] w-[90vw] h-[40vw] min-h-[120px] mt-10 mb-10" 
           style={{ left: '-5vw' }}
         >
           
           <motion.div
-            whileHover={{ scale: 1.02 }}
+            whileHover={{ scale: 1.02, rotateY: 5 }}
             transition={{ type: "spring", stiffness: 300 }}
-            className="absolute top-[7.2vw] left-[15.6vw] w-[68.4vw] h-[18vw] rounded-[2.1vw] border-[0.06vw] backdrop-blur-[5vw] bg-[linear-gradient(122.72deg,rgba(115,115,115,0.25)_1.74%,rgba(50,50,50,0.25)_1.75%,rgba(163,163,163,0.25)_33.05%,rgba(112,112,112,0.25)_97.16%)]"
+            className="absolute top-[7.2vw] left-[15.6vw] w-[68.4vw] h-[18vw] rounded-[2.1vw] border-[0.06vw] backdrop-blur-[5vw] bg-[linear-gradient(122.72deg,rgba(115,115,115,0.25)_1.74%,rgba(50,50,50,0.25)_1.75%,rgba(163,163,163,0.25)_33.05%,rgba(112,112,112,0.25)_97.16%)] shadow-2xl"
             style={{
               borderImage: `radial-gradient(88.13% 63.48% at 26.09% 25.74%, #FFFFFF 0%, rgba(255, 255, 255, 0.905829) 8.52%, rgba(255, 255, 255, 0.801323) 40.45%, rgba(255, 255, 255, 0.595409) 40.46%, rgba(255, 255, 255, 0.29) 96.15%, rgba(255, 255, 255, 0) 100%, rgba(255, 255, 255, 0) 100%) linear-gradient(180deg, rgba(0, 0, 0, 0.2) 18.72%, rgba(255, 30, 0, 0.2) 43.64%, rgba(0, 0, 0, 0.2) 67.21%)`,
               borderImageSlice: 1,
@@ -266,9 +408,9 @@ const RegisterDebug: React.FC = () => {
             </div>
           </motion.div>
           <motion.div
-            whileHover={{ scale: 1.02 }}
+            whileHover={{ scale: 1.02, rotateY: 5 }}
             transition={{ type: "spring", stiffness: 300 }}
-            className="absolute top-[15.6vw] left-[12vw] w-[76.8vw] h-[17.4vw] rounded-[2.1vw] border-[0.06vw] backdrop-blur-[5vw] bg-[linear-gradient(122.72deg,rgba(180,180,180,0.25)_1.74%,rgba(79,79,79,0.25)_1.75%,rgba(255,255,255,0.25)_33.05%,rgba(175,175,175,0.25)_97.16%)]"
+            className="absolute top-[15.6vw] left-[12vw] w-[76.8vw] h-[17.4vw] rounded-[2.1vw] border-[0.06vw] backdrop-blur-[5vw] bg-[linear-gradient(122.72deg,rgba(180,180,180,0.25)_1.74%,rgba(79,79,79,0.25)_1.75%,rgba(255,255,255,0.25)_33.05%,rgba(175,175,175,0.25)_97.16%)] shadow-2xl"
             style={{
               borderImage: `radial-gradient(88.13% 63.48% at 26.09% 25.74%, #FFFFFF 0%, rgba(255, 255, 255, 0.905829) 8.52%, rgba(255, 255, 255, 0.801323) 40.45%, rgba(255, 255, 255, 0.595409) 40.46%, rgba(255, 255, 255, 0.29) 96.15%, rgba(255, 255, 255, 0) 100%, rgba(255, 255, 255, 0) 100%) linear-gradient(180deg, rgba(0, 0, 0, 0.2) 18.72%, rgba(255, 30, 0, 0.2) 43.64%, rgba(0, 0, 0, 0.2) 67.21%)`,
               borderImageSlice: 1,
@@ -280,7 +422,7 @@ const RegisterDebug: React.FC = () => {
             </div>
             <div className="absolute right-[3.6vw] top-[3.6vw] text-right">
               <p className="text-white text-[1.32vw] min-text-[14px] font-inter">
-                Find the Bug, Fix the Code: Debug Your Way to Victory!
+                Find the Bug: Master the Art of Problem Solving!
               </p>
             </div>
           </motion.div>
@@ -289,12 +431,12 @@ const RegisterDebug: React.FC = () => {
             transition={{ type: "spring", stiffness: 300 }}
             src="/alexaverse2.0/debug-img.svg"
             alt="Debug Image"
-            className="absolute top-[4.8vw] left-[-14.4vw] w-[76.8vw] h-[19.8vw] object-contain rounded-[2.1vw]"
+            className="absolute top-[4.8vw] left-[-14.4vw] w-[76.8vw] h-[19.8vw] object-contain rounded-[2.1vw] drop-shadow-2xl"
           />
           <motion.div
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.05, rotate: 5 }}
             transition={{ type: "spring", stiffness: 300 }}
-            className="relative top-[26.4vw] left-[15vw] w-[18.6vw] h-[4.32vw] rounded-[3.12vw] border-[0.06vw] border-white backdrop-blur-[5vw] bg-[linear-gradient(122.72deg,rgba(144,144,144,0.25)_1.74%,rgba(63,63,63,0.25)_1.75%,rgba(204,204,204,0.25)_33.05%,rgba(140,140,140,0.25)_97.16%)]"
+            className="relative top-[26.4vw] left-[15vw] w-[18.6vw] h-[4.32vw] rounded-[3.12vw] border-[0.06vw] border-white backdrop-blur-[5vw] bg-[linear-gradient(122.72deg,rgba(144,144,144,0.25)_1.74%,rgba(63,63,63,0.25)_1.75%,rgba(204,204,204,0.25)_33.05%,rgba(140,140,140,0.25)_97.16%)] shadow-lg"
           >
             <img
               src="/alexaverse2.0/rewind-button.png"
@@ -307,7 +449,7 @@ const RegisterDebug: React.FC = () => {
               className="absolute left-[15.96vw] top-1/2 -translate-y-1/2 w-[1.92vw] h-[2.52vw] object-contain invert"
             />
             <div
-              className="absolute left-[9.36vw] top-[2.16vw] -translate-x-1/2 -translate-y-1/2 w-[9.36vw] h-[5.04vw] rounded-[3.12vw] border-[0.06vw] border-white backdrop-blur-[5vw] bg-white"
+              className="absolute left-[9.36vw] top-[2.16vw] -translate-x-1/2 -translate-y-1/2 w-[9.36vw] h-[5.04vw] rounded-[3.12vw] border-[0.06vw] border-white backdrop-blur-[5vw] bg-white shadow-lg"
             >
               <img
                 src="/alexaverse2.0/play-button.png"
@@ -319,13 +461,13 @@ const RegisterDebug: React.FC = () => {
           <motion.div
             whileHover={{ scale: 1.02 }}
             transition={{ type: "spring", stiffness: 300 }}
-            className="absolute top-[22.2vw] left-[37.2vw] w-[48vw] h-[2.52vw] rounded-[3.12vw] border-[0.1vw] border-white backdrop-blur-[5vw]"
+            className="absolute top-[22.2vw] left-[37.2vw] w-[48vw] h-[2.52vw] rounded-[3.12vw] border-[0.1vw] border-white backdrop-blur-[5vw] shadow-lg"
             style={{
               background: 'linear-gradient(to right, black 60%, transparent 20%)'
             }}
           >
             <div
-              className="absolute top-1/2 -translate-y-1/2 w-[5.04vw] h-[3.12vw] rounded-[3.12vw] border-[0.06vw] border-white backdrop-blur-[5vw] bg-white"
+              className="absolute top-1/2 -translate-y-1/2 w-[5.04vw] h-[3.12vw] rounded-[3.12vw] border-[0.06vw] border-white backdrop-blur-[5vw] bg-white shadow-lg"
               style={{
                 left: '60%',
                 transform: 'translate(-50%, -50%)'
@@ -335,26 +477,57 @@ const RegisterDebug: React.FC = () => {
           <motion.div
             whileHover={{ scale: 1.02 }}
             transition={{ type: "spring", stiffness: 300 }}
-            className="absolute top-[27vw] left-[37.2vw] w-[48vw] h-[5.04vw] rounded-[1.44vw] border-[0.1vw] border-white backdrop-blur-[5vw] flex items-center justify-center p-[1.2vw]"
+            className="absolute top-[27vw] left-[37.2vw] w-[48vw] h-[5.04vw] rounded-[1.44vw] border-[0.1vw] border-white backdrop-blur-[5vw] flex items-center justify-center p-[1.2vw] shadow-lg"
             style={{
               background: 'black'
             }}
           >
             <p className="text-white text-center font-inter text-[1.08vw] min-text-[14px] leading-tight">
-              Put your problem-solving skills to the test! Find and fix bugs in code snippets to prove you&apos;re the ultimate debug master!
+              Ready to test your debugging skills? Form a team of 3-5 members and compete in this challenging problem-solving event where you&apos;ll find and fix bugs in real-world scenarios!
             </p>
           </motion.div>
         </motion.div>
 
-        {/* Heading */}
-        <motion.h2
+        {/* Heading with enhanced animation */}
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-2xl sm:text-4xl font-audiowide mb-10 text-center whitespace-nowrap bg-gradient-to-r from-orange-400 via-red-500 to-pink-500 bg-clip-text text-transparent"
+          className="relative mb-10"
         >
-          Registration Form
-        </motion.h2>
+          <motion.h2
+            className="text-2xl sm:text-4xl font-audiowide text-center whitespace-nowrap relative z-10"
+            animate={{
+              backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+            style={{
+              background: "linear-gradient(90deg, #f97316, #ef4444, #dc2626, #f97316)",
+              backgroundSize: "300% 100%",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
+            Team Registration Form
+          </motion.h2>
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-red-500/20 blur-xl rounded-full"
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.6, 0.3],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        </motion.div>
 
         {/* Success/Error Message */}
         <AnimatePresence>
@@ -364,7 +537,7 @@ const RegisterDebug: React.FC = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.95 }}
               transition={{ duration: 0.3 }}
-              className={`mb-6 p-4 rounded-lg text-center max-w-2xl backdrop-blur-sm border ${
+              className={`mb-6 p-4 rounded-lg text-center max-w-2xl backdrop-blur-sm border shadow-lg ${
                 submitSuccess 
                   ? 'bg-green-500/20 border-green-400 text-green-300' 
                   : 'bg-red-500/20 border-red-400 text-red-300'
@@ -380,217 +553,262 @@ const RegisterDebug: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
           onSubmit={handleSubmit}
-          className="w-full max-w-6xl space-y-8 font-moul"
+          className="relative w-full max-w-6xl space-y-8 font-moul"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          
+          {/* Form background glow */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-red-500/10 rounded-3xl blur-3xl"
+            animate={{
+              scale: [1, 1.1, 1],
+              opacity: [0.3, 0.6, 0.3],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+
+          {/* Team Information */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+            className="relative z-10"
+          >
+            <motion.h3
+              className="text-xl sm:text-2xl font-audiowide mb-6 text-center bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent"
+            >
+              Team Information
+            </motion.h3>
             <motion.div
               initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-            >
-              <label
-                htmlFor="name"
-                className="block mb-2 font-moul text-white text-lg"
-              >
-                Name<span className="text-red-500">*</span>
-              </label>
-              <motion.input
-                whileFocus={{ scale: 1.02 }}
-                transition={{ type: "spring", stiffness: 300 }}
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                pattern="^[a-zA-Z\s]+$"
-                title="Only letters and spaces allowed"
-                placeholder="Enter your full name"
-                className={`w-full px-4 py-4 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent font-inter placeholder-gray-500 text-black bg-white/95 backdrop-blur-sm transition-all duration-300 ${
-                  errors.name ? 'border-red-500 shadow-lg shadow-red-500/25' : 'border-gray-400 hover:border-purple-300'
-                }`}
-              />
-              <AnimatePresence>
-                {errors.name && (
-                  <motion.p
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="text-red-400 text-sm mt-1 font-inter"
-                  >
-                    {errors.name}
-                  </motion.p>
-                )}
-              </AnimatePresence>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.9 }}
+              className="relative group"
             >
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-lg blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                animate={{
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
               <label
-                htmlFor="registrationNumber"
-                className="block mb-2 font-moul text-white text-lg"
+                htmlFor="teamName"
+                className="block mb-2 font-moul text-white text-lg relative z-10"
               >
-                Register Number<span className="text-red-500">*</span>
+                Team Name<span className="text-red-500">*</span>
               </label>
               <motion.input
-                whileFocus={{ scale: 1.02 }}
+                whileFocus={{ scale: 1.02, boxShadow: "0 0 20px rgba(249, 115, 22, 0.5)" }}
                 transition={{ type: "spring", stiffness: 300 }}
                 type="text"
-                id="registrationNumber"
-                name="registrationNumber"
-                value={formData.registrationNumber}
-                onChange={handleInputChange}
+                id="teamName"
+                name="teamName"
+                value={formData.teamName}
+                onChange={handleTeamNameChange}
                 required
-                pattern="^(?i)RA\d{13}$"
-                placeholder="RAXXXXXXXXXXXXX"
-                title="Must start with RA followed by 13 digits"
-                className={`w-full px-4 py-4 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent font-inter placeholder-gray-500 text-black bg-white/95 backdrop-blur-sm transition-all duration-300 ${
-                  errors.registrationNumber ? 'border-red-500 shadow-lg shadow-red-500/25' : 'border-gray-400 hover:border-purple-300'
+                placeholder="Enter your team name"
+                className={`relative z-10 w-full px-4 py-4 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent font-inter placeholder-gray-500 text-black bg-white/95 backdrop-blur-sm transition-all duration-300 shadow-lg ${
+                  errors.teamName ? 'border-red-500 shadow-lg shadow-red-500/25' : 'border-gray-400 hover:border-orange-300'
                 }`}
               />
               <AnimatePresence>
-                {errors.registrationNumber && (
+                {errors.teamName && (
                   <motion.p
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="text-red-400 text-sm mt-1 font-inter"
+                    className="text-red-400 text-sm mt-1 font-inter relative z-10"
                   >
-                    {errors.registrationNumber}
+                    {errors.teamName}
                   </motion.p>
                 )}
               </AnimatePresence>
             </motion.div>
+          </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 1.0 }}
+          {/* Team Members */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.0 }}
+            className="relative z-10"
+          >
+            <motion.h3
+              className="text-xl sm:text-2xl font-audiowide mb-6 text-center bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent"
             >
-              <label
-                htmlFor="phoneNumber"
-                className="block mb-2 font-moul text-white text-lg"
-              >
-                Phone Number<span className="text-red-500">*</span>
-              </label>
-              <motion.div
-                whileFocus={{ scale: 1.02 }}
-                transition={{ type: "spring", stiffness: 300 }}
-                className={`w-full flex items-center border-2 rounded-lg bg-white/95 backdrop-blur-sm focus-within:ring-2 focus-within:ring-purple-500 focus-within:border-transparent overflow-hidden transition-all duration-300 ${
-                  errors.phoneNumber ? 'border-red-500 shadow-lg shadow-red-500/25' : 'border-gray-400 hover:border-purple-300'
-                }`}
-              >
-                <span className="px-3 text-black text-md font-inter border-r border-gray-400 bg-gray-100">
-                  +91&nbsp;
-                </span>
-                <input
-                  type="tel"
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={handleInputChange}
-                  required
-                  pattern="^[0-9]{10}$"
-                  placeholder="012 345 6789"
-                  title="Enter a valid 10-digit phone number"
-                  className="flex-1 px-3 py-4 text-black placeholder-gray-500 bg-transparent focus:outline-none font-inter"
-                />
-              </motion.div>
-              <AnimatePresence>
-                {errors.phoneNumber && (
-                  <motion.p
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="text-red-400 text-sm mt-1 font-inter"
+              Team Members (3-5 members required)
+            </motion.h3>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {formData.teamMembers.map((member, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1.1 + index * 0.1 }}
+                  className="relative group bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20 shadow-lg"
+                >
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-red-500/10 rounded-lg blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    animate={{
+                      scale: [1, 1.02, 1],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: index * 0.5,
+                    }}
+                  />
+                  
+                  <motion.h4
+                    className="text-lg font-audiowide mb-4 text-center relative z-10"
+                    style={{
+                      background: "linear-gradient(90deg, #f97316, #ef4444)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                    }}
                   >
-                    {errors.phoneNumber}
-                  </motion.p>
-                )}
-              </AnimatePresence>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 1.1 }}
-            >
-              <label
-                htmlFor="srmMailId"
-                className="block mb-2 font-moul text-white text-lg"
-              >
-                SRMIST Email<span className="text-red-500">*</span>
-              </label>
-              <motion.input
-                whileFocus={{ scale: 1.02 }}
-                transition={{ type: "spring", stiffness: 300 }}
-                type="email"
-                id="srmMailId"
-                name="srmMailId"
-                value={formData.srmMailId}
-                onChange={handleInputChange}
-                required
-                pattern="^[a-zA-Z0-9._%+-]+@srmist\\.edu\\.in$"
-                placeholder="xyz@srmist.edu.in"
-                title="Email must be an SRMIST ID ending with @srmist.edu.in"
-                className={`w-full px-4 py-4 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent font-inter placeholder-gray-500 text-black bg-white/95 backdrop-blur-sm transition-all duration-300 ${
-                  errors.srmMailId ? 'border-red-500 shadow-lg shadow-red-500/25' : 'border-gray-400 hover:border-purple-300'
-                }`}
-              />
-              <AnimatePresence>
-                {errors.srmMailId && (
-                  <motion.p
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="text-red-400 text-sm mt-1 font-inter"
-                  >
-                    {errors.srmMailId}
-                  </motion.p>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          </div>
+                    Student {index + 1}
+                  </motion.h4>
+                  
+                  <div className="space-y-4 relative z-10">
+                    <div>
+                      <label className="block mb-2 font-moul text-white text-sm">
+                        Name<span className="text-red-500">*</span>
+                      </label>
+                      <motion.input
+                        whileFocus={{ scale: 1.02, boxShadow: "0 0 15px rgba(249, 115, 22, 0.3)" }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                        type="text"
+                        value={member.name}
+                        onChange={(e) => handleMemberChange(index, 'name', e.target.value)}
+                        required
+                        pattern="^[a-zA-Z\s]+$"
+                        placeholder="Enter full name"
+                        className="w-full px-3 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent font-inter placeholder-gray-500 text-black bg-white/95 backdrop-blur-sm transition-all duration-300 shadow-md"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block mb-2 font-moul text-white text-sm">
+                        Registration Number<span className="text-red-500">*</span>
+                      </label>
+                      <motion.input
+                        whileFocus={{ scale: 1.02, boxShadow: "0 0 15px rgba(249, 115, 22, 0.3)" }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                        type="text"
+                        value={member.registrationNumber}
+                        onChange={(e) => handleMemberChange(index, 'registrationNumber', e.target.value)}
+                        required
+                        pattern="^(?i)RA\d{13}$"
+                        placeholder="RAXXXXXXXXXXXXX"
+                        className="w-full px-3 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent font-inter placeholder-gray-500 text-black bg-white/95 backdrop-blur-sm transition-all duration-300 shadow-md"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block mb-2 font-moul text-white text-sm">
+                        SRMIST Email<span className="text-red-500">*</span>
+                      </label>
+                      <motion.input
+                        whileFocus={{ scale: 1.02, boxShadow: "0 0 15px rgba(249, 115, 22, 0.3)" }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                        type="email"
+                        value={member.srmMailId}
+                        onChange={(e) => handleMemberChange(index, 'srmMailId', e.target.value)}
+                        required
+                        pattern="^[a-zA-Z0-9._%+-]+@srmist\\.edu\\.in$"
+                        placeholder="xyz@srmist.edu.in"
+                        className="w-full px-3 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent font-inter placeholder-gray-500 text-black bg-white/95 backdrop-blur-sm transition-all duration-300 shadow-md"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block mb-2 font-moul text-white text-sm">
+                        Phone Number<span className="text-red-500">*</span>
+                      </label>
+                      <motion.div
+                        whileFocus={{ scale: 1.02, boxShadow: "0 0 15px rgba(249, 115, 22, 0.3)" }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                        className="w-full flex items-center border-2 rounded-lg bg-white/95 backdrop-blur-sm focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-transparent overflow-hidden transition-all duration-300 shadow-md"
+                      >
+                        <span className="px-3 text-black text-sm font-inter border-r border-gray-400 bg-gray-100">
+                          +91&nbsp;
+                        </span>
+                        <input
+                          type="tel"
+                          value={member.phoneNumber}
+                          onChange={(e) => handleMemberChange(index, 'phoneNumber', e.target.value)}
+                          required
+                          pattern="^[0-9]{10}$"
+                          placeholder="012 345 6789"
+                          className="flex-1 px-3 py-3 text-black placeholder-gray-500 bg-transparent focus:outline-none font-inter"
+                        />
+                      </motion.div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
 
           <motion.button
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.2 }}
+            transition={{ duration: 0.6, delay: 1.5 }}
             whileHover={{ 
               scale: 1.05,
-              boxShadow: "0 20px 40px rgba(249, 115, 22, 0.3)"
+              boxShadow: "0 20px 40px rgba(249, 115, 22, 0.4)"
             }}
             whileTap={{ scale: 0.95 }}
             type="submit"
             disabled={isSubmitting}
-            className={`mx-auto mt-16 px-20 py-6 bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 border-2 border-white rounded-[50px] text-white font-monsterrat text-2xl flex items-center justify-center gap-4 transition-all duration-300 backdrop-blur-sm ${
+            className={`relative z-10 mx-auto mt-16 px-20 py-6 bg-gradient-to-r from-orange-600 via-red-600 to-amber-600 border-2 border-white rounded-[50px] text-white font-monsterrat text-2xl flex items-center justify-center gap-4 transition-all duration-300 backdrop-blur-sm shadow-2xl ${
               isSubmitting 
                 ? 'opacity-50 cursor-not-allowed' 
                 : 'hover:shadow-2xl hover:shadow-orange-500/25'
             }`}
           >
+            {/* Button glow effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-orange-500/30 to-red-500/30 rounded-[50px] blur-xl"
+              animate={{
+                scale: [1, 1.1, 1],
+                opacity: [0.3, 0.6, 0.3],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
             {isSubmitting ? (
               <>
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                  className="w-6 h-6 border-2 border-white border-t-transparent rounded-full"
+                  className="w-6 h-6 border-2 border-white border-t-transparent rounded-full relative z-10"
                 />
-                Registering...
+                <span className="relative z-10">Registering Team...</span>
               </>
             ) : (
               <>
-                Register
+                <span className="relative z-10">Register Team</span>
                 <motion.img
-                  whileHover={{ x: 5 }}
+                  whileHover={{ x: 5, rotate: 5 }}
                   transition={{ type: "spring", stiffness: 300 }}
                   src="/alexaverse2.0/right-arrow.png"
                   alt="Arrow"
-                  className="w-6 h-6 object-contain filter invert ml-auto"
+                  className="w-6 h-6 object-contain filter invert ml-auto relative z-10"
                 />
               </>
             )}
