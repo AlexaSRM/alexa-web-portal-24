@@ -2,19 +2,88 @@
 
 import React, { useEffect, useState } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
+import { registerForVlogit, IndividualRegistration, ApiResponse } from "@/lib/api";
 
 const RegisterVlogit: React.FC = () => {
   const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<string>("");
+  const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
+  const [formData, setFormData] = useState<IndividualRegistration>({
+    name: "",
+    registrationNumber: "",
+    srmMailId: "",
+    phoneNumber: ""
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ""
+      }));
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitMessage("");
+    setSubmitSuccess(null);
+    setErrors({});
+
+    try {
+      const response: ApiResponse = await registerForVlogit(formData);
+      
+      if (response.success) {
+        setSubmitSuccess(true);
+        setSubmitMessage(response.message || 'Registration successful!');
+        // Reset form on success
+        setFormData({
+          name: "",
+          registrationNumber: "",
+          srmMailId: "",
+          phoneNumber: ""
+        });
+      } else {
+        setSubmitSuccess(false);
+        setSubmitMessage(response.message || 'Registration failed');
+        
+        // Handle field-specific errors
+        if (response.errors) {
+          const fieldErrors: Record<string, string> = {};
+          response.errors.forEach(error => {
+            fieldErrors[error.field] = error.message;
+          });
+          setErrors(fieldErrors);
+        }
+      }
+    } catch (error) {
+      setSubmitSuccess(false);
+      setSubmitMessage("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   if (!mounted) return null;
 
   return (
     <>
+      {/* Navigation remains the same */}
       <nav
         className="absolute left-1/2 transform -translate-x-1/2 z-10 w-full max-w-[1500px] px-6"
         style={{ top: "25px" }}
@@ -106,6 +175,7 @@ const RegisterVlogit: React.FC = () => {
         id="register-vlogit"
         className="w-full min-h-screen text-white flex flex-col items-center justify-center px-4 py-16"
       >
+        {/* Event display section remains the same */}
         <div className="relative max-w-[85rem] w-[90vw] h-[40vw] min-h-[120px] mt-10 mb-10" style={{ left: '-5vw' }}>
           
           <div
@@ -207,7 +277,18 @@ const RegisterVlogit: React.FC = () => {
           Registration Form
         </h2>
 
-        <form className="w-full max-w-6xl space-y-8 font-moul">
+        {/* Success/Error Message */}
+        {submitMessage && (
+          <div className={`mb-6 p-4 rounded-lg text-center max-w-2xl ${
+            submitSuccess 
+              ? 'bg-green-100 border border-green-400 text-green-700' 
+              : 'bg-red-100 border border-red-400 text-red-700'
+          }`}>
+            {submitMessage}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="w-full max-w-6xl space-y-8 font-moul">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           
             <div>
@@ -220,46 +301,63 @@ const RegisterVlogit: React.FC = () => {
               <input
                 type="text"
                 id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
                 required
                 pattern="^[a-zA-Z\s]+$"
                 title="Only letters and spaces allowed"
                 placeholder="Name"
-                className="w-full px-4 py-4 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 font-inter placeholder-gray-500 text-black bg-white"
+                className={`w-full px-4 py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 font-inter placeholder-gray-500 text-black bg-white ${
+                  errors.name ? 'border-red-500' : 'border-gray-400'
+                }`}
               />
+              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
             </div>
 
             <div>
               <label
-                htmlFor="regno"
+                htmlFor="registrationNumber"
                 className="block mb-2 font-moul text-white"
               >
                 Register Number<span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                id="regno"
+                id="registrationNumber"
+                name="registrationNumber"
+                value={formData.registrationNumber}
+                onChange={handleInputChange}
                 required
                 pattern="^(?i)RA\d{13}$"
                 placeholder="RAXXXXXXXXXXXXX"
                 title="Must start with RA followed by 13 digits"
-                className="w-full px-4 py-4 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 font-inter placeholder-gray-500 text-black bg-white"
+                className={`w-full px-4 py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 font-inter placeholder-gray-500 text-black bg-white ${
+                  errors.registrationNumber ? 'border-red-500' : 'border-gray-400'
+                }`}
               />
+              {errors.registrationNumber && <p className="text-red-500 text-sm mt-1">{errors.registrationNumber}</p>}
             </div>
 
             <div>
               <label
-                htmlFor="phone"
+                htmlFor="phoneNumber"
                 className="block mb-2 font-moul text-white"
               >
                 Phone Number<span className="text-red-500">*</span>
               </label>
-              <div className="w-full flex items-center border border-gray-400 rounded bg-white focus-within:ring-2 focus-within:ring-purple-500 overflow-hidden">
+              <div className={`w-full flex items-center border rounded bg-white focus-within:ring-2 focus-within:ring-purple-500 overflow-hidden ${
+                errors.phoneNumber ? 'border-red-500' : 'border-gray-400'
+              }`}>
                 <span className="px-3 text-black text-md font-inter border-r border-gray-400">
                   +91&nbsp;
                 </span>
                 <input
                   type="tel"
-                  id="phone"
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
                   required
                   pattern="^[0-9]{10}$"
                   placeholder="012 345 6789"
@@ -267,32 +365,44 @@ const RegisterVlogit: React.FC = () => {
                   className="flex-1 px-3 py-4 text-black placeholder-gray-500 bg-white focus:outline-none font-inter"
                 />
               </div>
+              {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
             </div>
 
             <div>
               <label
-                htmlFor="email"
+                htmlFor="srmMailId"
                 className="block mb-2 font-moul text-white"
               >
                 SRMIST Email<span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
-                id="email"
+                id="srmMailId"
+                name="srmMailId"
+                value={formData.srmMailId}
+                onChange={handleInputChange}
                 required
                 pattern="^[a-zA-Z0-9._%+-]+@srmist\\.edu\\.in$"
                 placeholder="xyz@srmist.edu.in"
                 title="Email must be an SRMIST ID ending with @srmist.edu.in"
-                className="w-full px-4 py-4 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 font-inter placeholder-gray-500 text-black bg-white"
+                className={`w-full px-4 py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 font-inter placeholder-gray-500 text-black bg-white ${
+                  errors.srmMailId ? 'border-red-500' : 'border-gray-400'
+                }`}
               />
+              {errors.srmMailId && <p className="text-red-500 text-sm mt-1">{errors.srmMailId}</p>}
             </div>
           </div>
 
           <button
             type="submit"
-            className="mx-auto mt-16 px-20 py-6 bg-[#130025] border-2 border-white rounded-[50px] text-white font-monsterrat text-2xl flex items-center justify-center gap-4 hover:scale-110 transition duration-200"
+            disabled={isSubmitting}
+            className={`mx-auto mt-16 px-20 py-6 bg-[#130025] border-2 border-white rounded-[50px] text-white font-monsterrat text-2xl flex items-center justify-center gap-4 transition duration-200 ${
+              isSubmitting 
+                ? 'opacity-50 cursor-not-allowed' 
+                : 'hover:scale-110'
+            }`}
           >
-            Register
+            {isSubmitting ? 'Registering...' : 'Register'}
             <img
               src="/alexaverse2.0/right-arrow.png"
               alt="Arrow"

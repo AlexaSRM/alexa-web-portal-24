@@ -2,19 +2,137 @@
 
 import React, { useEffect, useState } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
+import { registerForDebug, TeamRegistration, TeamMember, ApiResponse } from "@/lib/api";
 
 const RegisterDebug: React.FC = () => {
   const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<string>("");
+  const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
+  const [formData, setFormData] = useState<TeamRegistration>({
+    teamName: "",
+    teamMembers: [
+      { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" },
+      { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" },
+      { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" },
+      { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" },
+      { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" }
+    ]
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  const handleTeamNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      teamName: value
+    }));
+    
+    // Clear error when user starts typing
+    if (errors.teamName) {
+      setErrors(prev => ({
+        ...prev,
+        teamName: ""
+      }));
+    }
+  };
+
+  const handleMemberChange = (memberIndex: number, field: keyof TeamMember, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      teamMembers: prev.teamMembers.map((member, index) => 
+        index === memberIndex ? { ...member, [field]: value } : member
+      )
+    }));
+    
+    // Clear error when user starts typing
+    const errorKey = `teamMembers.${memberIndex}.${field}`;
+    if (errors[errorKey]) {
+      setErrors(prev => ({
+        ...prev,
+        [errorKey]: ""
+      }));
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitMessage("");
+    setSubmitSuccess(null);
+    setErrors({});
+
+    // Filter out empty team members (only include members with at least a name)
+    const validMembers = formData.teamMembers.filter(member => member.name.trim() !== "");
+    
+    // Validate team size (3-5 members for Debug)
+    if (validMembers.length < 3) {
+      setSubmitSuccess(false);
+      setSubmitMessage("Team must have at least 3 members.");
+      setIsSubmitting(false);
+      return;
+    }
+    
+    if (validMembers.length > 5) {
+      setSubmitSuccess(false);
+      setSubmitMessage("Team can have maximum 5 members.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    const submissionData: TeamRegistration = {
+      teamName: formData.teamName,
+      teamMembers: validMembers
+    };
+
+    try {
+      const response: ApiResponse = await registerForDebug(submissionData);
+      
+      if (response.success) {
+        setSubmitSuccess(true);
+        setSubmitMessage(response.message || 'Registration successful!');
+        // Reset form on success
+        setFormData({
+          teamName: "",
+          teamMembers: [
+            { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" },
+            { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" },
+            { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" },
+            { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" },
+            { name: "", registrationNumber: "", srmMailId: "", phoneNumber: "" }
+          ]
+        });
+      } else {
+        setSubmitSuccess(false);
+        setSubmitMessage(response.message || 'Registration failed');
+        
+        // Handle field-specific errors
+        if (response.errors) {
+          const fieldErrors: Record<string, string> = {};
+          response.errors.forEach(error => {
+            fieldErrors[error.field] = error.message;
+          });
+          setErrors(fieldErrors);
+        }
+      }
+    } catch (error) {
+      setSubmitSuccess(false);
+      setSubmitMessage("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   if (!mounted) return null;
 
   return (
     <>
+      {/* Navigation remains the same */}
       <nav
         className="absolute left-1/2 transform -translate-x-1/2 z-10 w-full max-w-[1500px] px-6"
         style={{ top: "25px" }}
@@ -104,6 +222,7 @@ const RegisterDebug: React.FC = () => {
         id="register-debug"
         className="w-full min-h-screen text-white flex flex-col items-center justify-center px-4 py-16"
       >
+        {/* Event display section remains the same */}
         <div className="relative max-w-[85rem] w-[90vw] h-[40vw] min-h-[120px] mt-10 mb-10" style={{ left: '-5vw' }}>
           <div
             className="absolute top-[7.2vw] left-[15.6vw] w-[68.4vw] h-[18vw] rounded-[2.1vw] border-[0.06vw] backdrop-blur-[5vw] bg-[linear-gradient(122.72deg,rgba(115,115,115,0.25)_1.74%,rgba(50,50,50,0.25)_1.75%,rgba(163,163,163,0.25)_33.05%,rgba(112,112,112,0.25)_97.16%)]"
@@ -201,11 +320,53 @@ const RegisterDebug: React.FC = () => {
           Registration Form
         </h2>
 
-        <form className="w-full max-w-6xl space-y-8">
+        {/* Success/Error Message */}
+        {submitMessage && (
+          <div className={`mb-6 p-4 rounded-lg text-center max-w-2xl ${
+            submitSuccess 
+              ? 'bg-green-100 border border-green-400 text-green-700' 
+              : 'bg-red-100 border border-red-400 text-red-700'
+          }`}>
+            {submitMessage}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="w-full max-w-6xl space-y-8">
+          {/* Team Name Field */}
+          <div className="space-y-6">
+            <h3 className="text-xl sm:text-3xl font-audiowide text-center text-purple-300">
+              Team Information
+            </h3>
+            <div className="max-w-md mx-auto">
+              <label
+                htmlFor="teamName"
+                className="block mb-2 font-semibold font-moul text-white"
+              >
+                Team Name<span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="teamName"
+                name="teamName"
+                value={formData.teamName}
+                onChange={handleTeamNameChange}
+                required
+                pattern="^[a-zA-Z0-9\s]+$"
+                title="Only letters, numbers, and spaces allowed (minimum 3 characters)"
+                placeholder="Enter team name"
+                className={`w-full px-4 py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 font-inter placeholder-gray-500 text-black bg-white ${
+                  errors.teamName ? 'border-red-500' : 'border-gray-400'
+                }`}
+              />
+              {errors.teamName && <p className="text-red-500 text-sm mt-1">{errors.teamName}</p>}
+            </div>
+          </div>
+
+          {/* Team Members */}
           {[1, 2, 3, 4, 5].map((studentNum) => (
             <div key={studentNum} className="space-y-6">
               <h3 className="text-xl sm:text-2xl font-audiowide text-center text-purple-300">
-                Student {studentNum}
+                Student {studentNum} {studentNum <= 3 ? <span className="text-red-500">*</span> : "(Optional)"}
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <div>
@@ -218,46 +379,62 @@ const RegisterDebug: React.FC = () => {
                   <input
                     type="text"
                     id={`name-${studentNum}`}
+                    value={formData.teamMembers[studentNum - 1].name}
+                    onChange={(e) => handleMemberChange(studentNum - 1, 'name', e.target.value)}
                     required={studentNum <= 3}
                     pattern="^[a-zA-Z\s]+$"
                     title="Only letters and spaces allowed"
                     placeholder="Name"
-                    className="w-full px-4 py-4 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 font-inter placeholder-gray-500 text-black bg-white"
+                    className={`w-full px-4 py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 font-inter placeholder-gray-500 text-black bg-white ${
+                      errors[`teamMembers.${studentNum - 1}.name`] ? 'border-red-500' : 'border-gray-400'
+                    }`}
                   />
+                  {errors[`teamMembers.${studentNum - 1}.name`] && 
+                    <p className="text-red-500 text-sm mt-1">{errors[`teamMembers.${studentNum - 1}.name`]}</p>}
                 </div>
 
                 <div>
                   <label
-                    htmlFor={`regno-${studentNum}`}
+                    htmlFor={`registrationNumber-${studentNum}`}
                     className="block mb-2 font-moul text-white"
                   >
                     Register Number{studentNum <= 3 ? <span className="text-red-500">*</span> : null}
                   </label>
                   <input
                     type="text"
-                    id={`regno-${studentNum}`}
+                    id={`registrationNumber-${studentNum}`}
+                    value={formData.teamMembers[studentNum - 1].registrationNumber}
+                    onChange={(e) => handleMemberChange(studentNum - 1, 'registrationNumber', e.target.value)}
                     required={studentNum <= 3}
                     pattern="^RA\\d{13}$"
                     placeholder="RAXXXXXXXXXXXXX"
                     title="Must start with RA followed by 13 digits"
-                    className="w-full px-4 py-4 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 font-inter placeholder-gray-500 text-black bg-white"
+                    className={`w-full px-4 py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 font-inter placeholder-gray-500 text-black bg-white ${
+                      errors[`teamMembers.${studentNum - 1}.registrationNumber`] ? 'border-red-500' : 'border-gray-400'
+                    }`}
                   />
+                  {errors[`teamMembers.${studentNum - 1}.registrationNumber`] && 
+                    <p className="text-red-500 text-sm mt-1">{errors[`teamMembers.${studentNum - 1}.registrationNumber`]}</p>}
                 </div>
 
                 <div>
                   <label
-                    htmlFor={`phone-${studentNum}`}
+                    htmlFor={`phoneNumber-${studentNum}`}
                     className="block mb-2 font-moul text-white"
                   >
                     Phone Number{studentNum <= 3 ? <span className="text-red-500">*</span> : null}
                   </label>
-                  <div className="w-full flex items-center border border-gray-400 rounded bg-white focus-within:ring-2 focus-within:ring-purple-500 overflow-hidden">
+                  <div className={`w-full flex items-center border rounded bg-white focus-within:ring-2 focus-within:ring-purple-500 overflow-hidden ${
+                    errors[`teamMembers.${studentNum - 1}.phoneNumber`] ? 'border-red-500' : 'border-gray-400'
+                  }`}>
                     <span className="px-3 text-black text-md font-inter border-r border-gray-400">
                       +91&nbsp;
                     </span>
                     <input
                       type="tel"
-                      id={`phone-${studentNum}`}
+                      id={`phoneNumber-${studentNum}`}
+                      value={formData.teamMembers[studentNum - 1].phoneNumber}
+                      onChange={(e) => handleMemberChange(studentNum - 1, 'phoneNumber', e.target.value)}
                       required={studentNum <= 3}
                       pattern="^[0-9]{10}$"
                       placeholder="012 345 6789"
@@ -265,34 +442,52 @@ const RegisterDebug: React.FC = () => {
                       className="flex-1 px-3 py-4 text-black placeholder-gray-500 bg-white focus:outline-none font-inter"
                     />
                   </div>
+                  {errors[`teamMembers.${studentNum - 1}.phoneNumber`] && 
+                    <p className="text-red-500 text-sm mt-1">{errors[`teamMembers.${studentNum - 1}.phoneNumber`]}</p>}
                 </div>
 
                 <div>
                   <label
-                    htmlFor={`email-${studentNum}`}
+                    htmlFor={`srmMailId-${studentNum}`}
                     className="block mb-2 font-moul text-white"
                   >
                     SRMIST Email{studentNum <= 3 ? <span className="text-red-500">*</span> : null}
                   </label>
                   <input
                     type="email"
-                    id={`email-${studentNum}`}
+                    id={`srmMailId-${studentNum}`}
+                    value={formData.teamMembers[studentNum - 1].srmMailId}
+                    onChange={(e) => handleMemberChange(studentNum - 1, 'srmMailId', e.target.value)}
                     required={studentNum <= 3}
                     pattern="^[a-zA-Z0-9._%+-]+@srmist\\.edu\\.in$"
                     placeholder="xyz@srmist.edu.in"
                     title="Email must be an SRMIST ID ending with @srmist.edu.in"
-                    className="w-full px-4 py-4 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 font-inter placeholder-gray-500 text-black bg-white"
+                    className={`w-full px-4 py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 font-inter placeholder-gray-500 text-black bg-white ${
+                      errors[`teamMembers.${studentNum - 1}.srmMailId`] ? 'border-red-500' : 'border-gray-400'
+                    }`}
                   />
+                  {errors[`teamMembers.${studentNum - 1}.srmMailId`] && 
+                    <p className="text-red-500 text-sm mt-1">{errors[`teamMembers.${studentNum - 1}.srmMailId`]}</p>}
                 </div>
               </div>
             </div>
           ))}
 
+          <div className="text-center text-white font-inter">
+            <p className="text-lg mb-2">Team Size: 3-5 members</p>
+            <p className="text-sm text-gray-300">First 3 members are required, members 4-5 are optional</p>
+          </div>
+
           <button
             type="submit"
-            className="mx-auto px-20 py-6 bg-[#130025] border-2 border-white rounded-[50px] text-white font-monsterrat text-2xl flex items-center justify-center gap-4 hover:bg-[#2b0a47] transition duration-300"
+            disabled={isSubmitting}
+            className={`mx-auto px-20 py-6 bg-[#130025] border-2 border-white rounded-[50px] text-white font-monsterrat text-2xl flex items-center justify-center gap-4 transition duration-300 ${
+              isSubmitting 
+                ? 'opacity-50 cursor-not-allowed' 
+                : 'hover:bg-[#2b0a47]'
+            }`}
           >
-            Register
+            {isSubmitting ? 'Registering Team...' : 'Register Team'}
             <img
               src="/alexaverse2.0/right-arrow.png"
               alt="Arrow"
