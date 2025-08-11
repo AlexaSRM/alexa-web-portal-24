@@ -9,6 +9,7 @@ import {
   Inter,
   Montserrat
 } from "next/font/google";
+import { Toaster } from "@/components/ui/toaster";
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -83,6 +84,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen bg-dark_bg font-sans">
         {children}
+        <Toaster />
       </body>
     </html>
   );

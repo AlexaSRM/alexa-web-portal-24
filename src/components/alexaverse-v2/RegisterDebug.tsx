@@ -1,15 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { HiMenu, HiX } from "react-icons/hi";
+import { HiMenu, HiX, HiCheck, HiXCircle, HiSparkles, HiUserGroup } from "react-icons/hi";
 import { registerForDebug, TeamRegistration, TeamMember, ApiResponse } from "@/lib/api";
+import { useToast } from "@/components/ui/use-toast";
 
 const RegisterDebug: React.FC = () => {
   const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState<string>("");
-  const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
   const [formData, setFormData] = useState<TeamRegistration>({
     teamName: "",
     teamMembers: [
@@ -21,6 +20,8 @@ const RegisterDebug: React.FC = () => {
     ]
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [focusedField, setFocusedField] = useState<string>("");
+  const { toast } = useToast();
 
   useEffect(() => {
     setMounted(true);
@@ -60,11 +61,17 @@ const RegisterDebug: React.FC = () => {
     }
   };
 
+  const handleFocus = (fieldName: string) => {
+    setFocusedField(fieldName);
+  };
+
+  const handleBlur = () => {
+    setFocusedField("");
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitMessage("");
-    setSubmitSuccess(null);
     setErrors({});
 
     // Filter out empty team members (only include members with at least a name)
@@ -72,15 +79,21 @@ const RegisterDebug: React.FC = () => {
     
     // Validate team size (3-5 members for Debug)
     if (validMembers.length < 3) {
-      setSubmitSuccess(false);
-      setSubmitMessage("Team must have at least 3 members.");
+      toast({
+        title: "❌ Team Size Error",
+        description: "Team must have at least 3 members.",
+        variant: "destructive",
+      });
       setIsSubmitting(false);
       return;
     }
     
     if (validMembers.length > 5) {
-      setSubmitSuccess(false);
-      setSubmitMessage("Team can have maximum 5 members.");
+      toast({
+        title: "❌ Team Size Error",
+        description: "Team can have maximum 5 members.",
+        variant: "destructive",
+      });
       setIsSubmitting(false);
       return;
     }
@@ -94,8 +107,12 @@ const RegisterDebug: React.FC = () => {
       const response: ApiResponse = await registerForDebug(submissionData);
       
       if (response.success) {
-        setSubmitSuccess(true);
-        setSubmitMessage(response.message || 'Registration successful!');
+        toast({
+          title: "🎉 Team Registration Successful!",
+          description: "Your team has been successfully registered for Debug the Campus! Check your email for confirmation.",
+          variant: "default",
+        });
+        
         // Reset form on success
         setFormData({
           teamName: "",
@@ -108,8 +125,11 @@ const RegisterDebug: React.FC = () => {
           ]
         });
       } else {
-        setSubmitSuccess(false);
-        setSubmitMessage(response.message || 'Registration failed');
+        toast({
+          title: "❌ Registration Failed",
+          description: response.message || 'Registration failed. Please try again.',
+          variant: "destructive",
+        });
         
         // Handle field-specific errors
         if (response.errors) {
@@ -121,8 +141,11 @@ const RegisterDebug: React.FC = () => {
         }
       }
     } catch (error) {
-      setSubmitSuccess(false);
-      setSubmitMessage("An unexpected error occurred. Please try again.");
+      toast({
+        title: "🚨 Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -132,7 +155,7 @@ const RegisterDebug: React.FC = () => {
 
   return (
     <>
-      {/* Navigation remains the same */}
+      {/* Navigation */}
       <nav
         className="absolute left-1/2 transform -translate-x-1/2 z-10 w-full max-w-[1500px] px-6"
         style={{ top: "25px" }}
@@ -175,10 +198,11 @@ const RegisterDebug: React.FC = () => {
         </div>
       </nav>
 
+      {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 bg-gradient-to-br from-[#511e5b] via-[#1A052A] to-[#030645] z-50 flex flex-col justify-between items-center">
+        <div className="fixed inset-0 bg-gradient-to-br from-[#511e5b] via-[#1A052A] to-[#030645] z-50 flex flex-col justify-between items-center animate-in fade-in duration-300">
           <button
-            className="absolute top-6 right-6 text-white text-4xl"
+            className="absolute top-6 right-6 text-white text-4xl hover:text-purple-300 transition-colors"
             onClick={() => setMobileMenuOpen(false)}
             aria-label="Close Menu"
           >
@@ -189,21 +213,21 @@ const RegisterDebug: React.FC = () => {
             <a
               href="/alexaverse-v2"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-white font-audiowide text-4xl hover:text-purple-300 transition"
+              className="text-white font-audiowide text-4xl hover:text-purple-300 transition-colors"
             >
               HOME
             </a>
             <a
               href="/alexaverse-v2#events"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-white font-audiowide text-4xl hover:text-purple-300 transition"
+              className="text-white font-audiowide text-4xl hover:text-purple-300 transition-colors"
             >
               OUR EVENTS
             </a>
             <a
               href="#contact"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-white font-audiowide text-4xl hover:text-purple-300 transition"
+              className="text-white font-audiowide text-4xl hover:text-purple-300 transition-colors"
             >
               CONTACT US
             </a>
@@ -220,10 +244,30 @@ const RegisterDebug: React.FC = () => {
 
       <section
         id="register-debug"
-        className="w-full min-h-screen text-white flex flex-col items-center justify-center px-4 py-16"
+        className="w-full min-h-screen text-white flex flex-col items-center justify-center px-4 py-16 relative overflow-hidden"
       >
-        {/* Event display section remains the same */}
-        <div className="relative max-w-[85rem] w-[90vw] h-[40vw] min-h-[120px] mt-10 mb-10" style={{ left: '-5vw' }}>
+        {/* Animated Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1A052A] via-[#511e5b] to-[#030645] opacity-90"></div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
+        
+        {/* Floating Particles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(20)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-2 h-2 bg-green-400 rounded-full animate-pulse"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 2}s`,
+                animationDuration: `${2 + Math.random() * 2}s`
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Event Display Section */}
+        <div className="relative max-w-[85rem] w-[90vw] h-[40vw] min-h-[120px] mt-10 mb-10 animate-in slide-in-from-bottom-8 duration-1000" style={{ left: '-5vw' }}>
           <div
             className="absolute top-[7.2vw] left-[15.6vw] w-[68.4vw] h-[18vw] rounded-[2.1vw] border-[0.06vw] backdrop-blur-[5vw] bg-[linear-gradient(122.72deg,rgba(115,115,115,0.25)_1.74%,rgba(50,50,50,0.25)_1.75%,rgba(163,163,163,0.25)_33.05%,rgba(112,112,112,0.25)_97.16%)]"
             style={{
@@ -316,185 +360,325 @@ const RegisterDebug: React.FC = () => {
           </div>
         </div>
 
-        <h2 className="text-2xl sm:text-4xl font-audiowide mb-10 text-center whitespace-nowrap">
-          Registration Form
-        </h2>
-
-        {/* Success/Error Message */}
-        {submitMessage && (
-          <div className={`mb-6 p-4 rounded-lg text-center max-w-2xl ${
-            submitSuccess 
-              ? 'bg-green-100 border border-green-400 text-green-700' 
-              : 'bg-red-100 border border-red-400 text-red-700'
-          }`}>
-            {submitMessage}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="w-full max-w-6xl space-y-8">
-          {/* Team Name Field */}
-          <div className="space-y-6">
-            <h3 className="text-xl sm:text-3xl font-audiowide text-center text-purple-300">
-              Team Information
-            </h3>
-            <div className="max-w-md mx-auto">
-              <label
-                htmlFor="teamName"
-                className="block mb-2 font-semibold font-moul text-white"
-              >
-                Team Name<span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="teamName"
-                name="teamName"
-                value={formData.teamName}
-                onChange={handleTeamNameChange}
-                required
-                pattern="^[a-zA-Z0-9\s]+$"
-                title="Only letters, numbers, and spaces allowed (minimum 3 characters)"
-                placeholder="Enter team name"
-                className={`w-full px-4 py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 font-inter placeholder-gray-500 text-black bg-white ${
-                  errors.teamName ? 'border-red-500' : 'border-gray-400'
-                }`}
-              />
-              {errors.teamName && <p className="text-red-500 text-sm mt-1">{errors.teamName}</p>}
+        {/* Enhanced Registration Form */}
+        <div className="relative z-10 w-full max-w-6xl mx-auto">
+          {/* Form Header */}
+          <div className="text-center mb-12 animate-in slide-in-from-bottom-8 duration-1000 delay-300">
+            <div className="inline-flex items-center gap-3 mb-4">
+              <HiSparkles className="text-4xl text-green-400 animate-pulse" />
+              <h2 className="text-4xl sm:text-6xl font-audiowide bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                Join Debug the Campus
+              </h2>
+              <HiSparkles className="text-4xl text-green-400 animate-pulse" />
             </div>
+            <p className="text-xl text-gray-300 font-inter max-w-2xl mx-auto">
+              Ready to hunt for QR codes and solve puzzles? Register your team now and embark on the ultimate treasure hunt!
+            </p>
           </div>
 
-          {/* Team Members */}
-          {[1, 2, 3, 4, 5].map((studentNum) => (
-            <div key={studentNum} className="space-y-6">
-              <h3 className="text-xl sm:text-2xl font-audiowide text-center text-purple-300">
-                Student {studentNum} {studentNum <= 3 ? <span className="text-red-500">*</span> : "(Optional)"}
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                <div>
-                  <label
-                    htmlFor={`name-${studentNum}`}
-                    className="block mb-2 font-moul text-white"
-                  >
-                    Name{studentNum <= 3 ? <span className="text-red-500">*</span> : null}
-                  </label>
-                  <input
-                    type="text"
-                    id={`name-${studentNum}`}
-                    value={formData.teamMembers[studentNum - 1].name}
-                    onChange={(e) => handleMemberChange(studentNum - 1, 'name', e.target.value)}
-                    required={studentNum <= 3}
-                    pattern="^[a-zA-Z\s]+$"
-                    title="Only letters and spaces allowed"
-                    placeholder="Name"
-                    className={`w-full px-4 py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 font-inter placeholder-gray-500 text-black bg-white ${
-                      errors[`teamMembers.${studentNum - 1}.name`] ? 'border-red-500' : 'border-gray-400'
-                    }`}
-                  />
-                  {errors[`teamMembers.${studentNum - 1}.name`] && 
-                    <p className="text-red-500 text-sm mt-1">{errors[`teamMembers.${studentNum - 1}.name`]}</p>}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor={`registrationNumber-${studentNum}`}
-                    className="block mb-2 font-moul text-white"
-                  >
-                    Register Number{studentNum <= 3 ? <span className="text-red-500">*</span> : null}
-                  </label>
-                  <input
-                    type="text"
-                    id={`registrationNumber-${studentNum}`}
-                    value={formData.teamMembers[studentNum - 1].registrationNumber}
-                    onChange={(e) => handleMemberChange(studentNum - 1, 'registrationNumber', e.target.value)}
-                    required={studentNum <= 3}
-                    pattern="^RA\\d{13}$"
-                    placeholder="RAXXXXXXXXXXXXX"
-                    title="Must start with RA followed by 13 digits"
-                    className={`w-full px-4 py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 font-inter placeholder-gray-500 text-black bg-white ${
-                      errors[`teamMembers.${studentNum - 1}.registrationNumber`] ? 'border-red-500' : 'border-gray-400'
-                    }`}
-                  />
-                  {errors[`teamMembers.${studentNum - 1}.registrationNumber`] && 
-                    <p className="text-red-500 text-sm mt-1">{errors[`teamMembers.${studentNum - 1}.registrationNumber`]}</p>}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor={`phoneNumber-${studentNum}`}
-                    className="block mb-2 font-moul text-white"
-                  >
-                    Phone Number{studentNum <= 3 ? <span className="text-red-500">*</span> : null}
-                  </label>
-                  <div className={`w-full flex items-center border rounded bg-white focus-within:ring-2 focus-within:ring-purple-500 overflow-hidden ${
-                    errors[`teamMembers.${studentNum - 1}.phoneNumber`] ? 'border-red-500' : 'border-gray-400'
-                  }`}>
-                    <span className="px-3 text-black text-md font-inter border-r border-gray-400">
-                      +91&nbsp;
-                    </span>
-                    <input
-                      type="tel"
-                      id={`phoneNumber-${studentNum}`}
-                      value={formData.teamMembers[studentNum - 1].phoneNumber}
-                      onChange={(e) => handleMemberChange(studentNum - 1, 'phoneNumber', e.target.value)}
-                      required={studentNum <= 3}
-                      pattern="^[0-9]{10}$"
-                      placeholder="012 345 6789"
-                      title="Enter a valid 10-digit phone number"
-                      className="flex-1 px-3 py-4 text-black placeholder-gray-500 bg-white focus:outline-none font-inter"
-                    />
-                  </div>
-                  {errors[`teamMembers.${studentNum - 1}.phoneNumber`] && 
-                    <p className="text-red-500 text-sm mt-1">{errors[`teamMembers.${studentNum - 1}.phoneNumber`]}</p>}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor={`srmMailId-${studentNum}`}
-                    className="block mb-2 font-moul text-white"
-                  >
-                    SRMIST Email{studentNum <= 3 ? <span className="text-red-500">*</span> : null}
-                  </label>
-                  <input
-                    type="email"
-                    id={`srmMailId-${studentNum}`}
-                    value={formData.teamMembers[studentNum - 1].srmMailId}
-                    onChange={(e) => handleMemberChange(studentNum - 1, 'srmMailId', e.target.value)}
-                    required={studentNum <= 3}
-                    pattern="^[a-zA-Z0-9._%+-]+@srmist\\.edu\\.in$"
-                    placeholder="xyz@srmist.edu.in"
-                    title="Email must be an SRMIST ID ending with @srmist.edu.in"
-                    className={`w-full px-4 py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 font-inter placeholder-gray-500 text-black bg-white ${
-                      errors[`teamMembers.${studentNum - 1}.srmMailId`] ? 'border-red-500' : 'border-gray-400'
-                    }`}
-                  />
-                  {errors[`teamMembers.${studentNum - 1}.srmMailId`] && 
-                    <p className="text-red-500 text-sm mt-1">{errors[`teamMembers.${studentNum - 1}.srmMailId`]}</p>}
+          {/* Enhanced Form */}
+          <form onSubmit={handleSubmit} className="space-y-12 animate-in slide-in-from-bottom-8 duration-1000 delay-500">
+            {/* Team Information Section */}
+            <div className="space-y-8">
+              <div className="text-center">
+                <div className="inline-flex items-center gap-3 mb-4">
+                  <HiUserGroup className="text-3xl text-green-400" />
+                  <h3 className="text-2xl sm:text-4xl font-audiowide text-green-400">
+                    Team Information
+                  </h3>
+                  <HiUserGroup className="text-3xl text-green-400" />
                 </div>
               </div>
+              
+              {/* Team Name Field */}
+              <div className="max-w-md mx-auto">
+                <div className={`relative transition-all duration-300 ${
+                  focusedField === 'teamName' || formData.teamName ? 'scale-105' : ''
+                }`}>
+                  <input
+                    type="text"
+                    id="teamName"
+                    name="teamName"
+                    value={formData.teamName}
+                    onChange={handleTeamNameChange}
+                    onFocus={() => handleFocus('teamName')}
+                    onBlur={handleBlur}
+                    required
+                    pattern="^[a-zA-Z0-9\s]+$"
+                    title="Only letters, numbers, and spaces allowed (minimum 3 characters)"
+                    placeholder=" "
+                    className={`w-full px-6 py-6 bg-white/10 backdrop-blur-md border-2 rounded-2xl text-white placeholder-transparent focus:outline-none focus:ring-4 focus:ring-green-500/50 transition-all duration-300 font-inter text-lg ${
+                      errors.teamName ? 'border-red-500' : focusedField === 'teamName' ? 'border-green-400' : 'border-white/30'
+                    }`}
+                  />
+                  <label
+                    htmlFor="teamName"
+                    className={`absolute left-6 transition-all duration-300 pointer-events-none font-moul ${
+                      focusedField === 'teamName' || formData.teamName
+                        ? 'text-sm text-green-400 -translate-y-8'
+                        : 'text-lg text-gray-300 top-6'
+                    }`}
+                  >
+                    Team Name <span className="text-red-500">*</span>
+                  </label>
+                  {formData.teamName && !errors.teamName && (
+                    <HiCheck className="absolute right-4 top-6 text-green-400 text-xl" />
+                  )}
+                  {errors.teamName && (
+                    <HiXCircle className="absolute right-4 top-6 text-red-400 text-xl" />
+                  )}
+                </div>
+                {errors.teamName && (
+                  <p className="text-red-400 text-sm mt-2 flex items-center gap-2 animate-in slide-in-from-top-2 duration-300">
+                    <HiXCircle className="text-sm" />
+                    {errors.teamName}
+                  </p>
+                )}
+              </div>
             </div>
-          ))}
 
-          <div className="text-center text-white font-inter">
-            <p className="text-lg mb-2">Team Size: 3-5 members</p>
-            <p className="text-sm text-gray-300">First 3 members are required, members 4-5 are optional</p>
-          </div>
+            {/* Team Members Section */}
+            <div className="space-y-8">
+              <div className="text-center">
+                <h3 className="text-2xl sm:text-4xl font-audiowide text-green-400 mb-4">
+                  Team Members
+                </h3>
+                <p className="text-gray-300 font-inter">
+                  Team Size: 3-5 members (First 3 members are required, members 4-5 are optional)
+                </p>
+              </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className={`mx-auto px-20 py-6 bg-[#130025] border-2 border-white rounded-[50px] text-white font-monsterrat text-2xl flex items-center justify-center gap-4 transition duration-300 ${
-              isSubmitting 
-                ? 'opacity-50 cursor-not-allowed' 
-                : 'hover:bg-[#2b0a47]'
-            }`}
-          >
-            {isSubmitting ? 'Registering Team...' : 'Register Team'}
-            <img
-              src="/alexaverse2.0/right-arrow.png"
-              alt="Arrow"
-              className="w-6 h-6 object-contain filter invert ml-auto"
-            />
-          </button>
-        </form>
+              {/* Team Members Grid */}
+              {[1, 2, 3, 4, 5].map((studentNum) => (
+                <div key={studentNum} className="space-y-6 animate-in slide-in-from-bottom-8 duration-1000 delay-700">
+                  <div className="text-center">
+                    <h4 className="text-xl sm:text-2xl font-audiowide text-green-300">
+                      Student {studentNum} {studentNum <= 3 ? <span className="text-red-500">*</span> : "(Optional)"}
+                    </h4>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    {/* Name Field */}
+                    <div className="group relative">
+                      <div className={`relative transition-all duration-300 ${
+                        focusedField === `name-${studentNum}` || formData.teamMembers[studentNum - 1].name ? 'scale-105' : ''
+                      }`}>
+                        <input
+                          type="text"
+                          id={`name-${studentNum}`}
+                          value={formData.teamMembers[studentNum - 1].name}
+                          onChange={(e) => handleMemberChange(studentNum - 1, 'name', e.target.value)}
+                          onFocus={() => handleFocus(`name-${studentNum}`)}
+                          onBlur={handleBlur}
+                          required={studentNum <= 3}
+                          pattern="^[a-zA-Z\s]+$"
+                          title="Only letters and spaces allowed"
+                          placeholder=" "
+                          className={`w-full px-6 py-6 bg-white/10 backdrop-blur-md border-2 rounded-2xl text-white placeholder-transparent focus:outline-none focus:ring-4 focus:ring-green-500/50 transition-all duration-300 font-inter text-lg ${
+                            errors[`teamMembers.${studentNum - 1}.name`] ? 'border-red-500' : focusedField === `name-${studentNum}` ? 'border-green-400' : 'border-white/30'
+                          }`}
+                        />
+                        <label
+                          htmlFor={`name-${studentNum}`}
+                          className={`absolute left-6 transition-all duration-300 pointer-events-none font-moul ${
+                            focusedField === `name-${studentNum}` || formData.teamMembers[studentNum - 1].name
+                              ? 'text-sm text-green-400 -translate-y-8'
+                              : 'text-lg text-gray-300 top-6'
+                          }`}
+                        >
+                          Full Name {studentNum <= 3 ? <span className="text-red-500">*</span> : null}
+                        </label>
+                        {formData.teamMembers[studentNum - 1].name && !errors[`teamMembers.${studentNum - 1}.name`] && (
+                          <HiCheck className="absolute right-4 top-6 text-green-400 text-xl" />
+                        )}
+                        {errors[`teamMembers.${studentNum - 1}.name`] && (
+                          <HiXCircle className="absolute right-4 top-6 text-red-400 text-xl" />
+                        )}
+                      </div>
+                      {errors[`teamMembers.${studentNum - 1}.name`] && (
+                        <p className="text-red-400 text-sm mt-2 flex items-center gap-2 animate-in slide-in-from-top-2 duration-300">
+                          <HiXCircle className="text-sm" />
+                          {errors[`teamMembers.${studentNum - 1}.name`]}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Registration Number Field */}
+                    <div className="group relative">
+                      <div className={`relative transition-all duration-300 ${
+                        focusedField === `registrationNumber-${studentNum}` || formData.teamMembers[studentNum - 1].registrationNumber ? 'scale-105' : ''
+                      }`}>
+                        <input
+                          type="text"
+                          id={`registrationNumber-${studentNum}`}
+                          value={formData.teamMembers[studentNum - 1].registrationNumber}
+                          onChange={(e) => handleMemberChange(studentNum - 1, 'registrationNumber', e.target.value)}
+                          onFocus={() => handleFocus(`registrationNumber-${studentNum}`)}
+                          onBlur={handleBlur}
+                          required={studentNum <= 3}
+                          pattern="^RA\\d{13}$"
+                          placeholder=" "
+                          title="Must start with RA followed by 13 digits"
+                          className={`w-full px-6 py-6 bg-white/10 backdrop-blur-md border-2 rounded-2xl text-white placeholder-transparent focus:outline-none focus:ring-4 focus:ring-green-500/50 transition-all duration-300 font-inter text-lg ${
+                            errors[`teamMembers.${studentNum - 1}.registrationNumber`] ? 'border-red-500' : focusedField === `registrationNumber-${studentNum}` ? 'border-green-400' : 'border-white/30'
+                          }`}
+                        />
+                        <label
+                          htmlFor={`registrationNumber-${studentNum}`}
+                          className={`absolute left-6 transition-all duration-300 pointer-events-none font-moul ${
+                            focusedField === `registrationNumber-${studentNum}` || formData.teamMembers[studentNum - 1].registrationNumber
+                              ? 'text-sm text-green-400 -translate-y-8'
+                              : 'text-lg text-gray-300 top-6'
+                          }`}
+                        >
+                          Registration Number {studentNum <= 3 ? <span className="text-red-500">*</span> : null}
+                        </label>
+                        {formData.teamMembers[studentNum - 1].registrationNumber && !errors[`teamMembers.${studentNum - 1}.registrationNumber`] && (
+                          <HiCheck className="absolute right-4 top-6 text-green-400 text-xl" />
+                        )}
+                        {errors[`teamMembers.${studentNum - 1}.registrationNumber`] && (
+                          <HiXCircle className="absolute right-4 top-6 text-red-400 text-xl" />
+                        )}
+                      </div>
+                      {errors[`teamMembers.${studentNum - 1}.registrationNumber`] && (
+                        <p className="text-red-400 text-sm mt-2 flex items-center gap-2 animate-in slide-in-from-top-2 duration-300">
+                          <HiXCircle className="text-sm" />
+                          {errors[`teamMembers.${studentNum - 1}.registrationNumber`]}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Phone Number Field */}
+                    <div className="group relative">
+                      <div className={`relative transition-all duration-300 ${
+                        focusedField === `phoneNumber-${studentNum}` || formData.teamMembers[studentNum - 1].phoneNumber ? 'scale-105' : ''
+                      }`}>
+                        <div className={`w-full flex items-center bg-white/10 backdrop-blur-md border-2 rounded-2xl focus-within:ring-4 focus-within:ring-green-500/50 transition-all duration-300 overflow-hidden ${
+                          errors[`teamMembers.${studentNum - 1}.phoneNumber`] ? 'border-red-500' : focusedField === `phoneNumber-${studentNum}` ? 'border-green-400' : 'border-white/30'
+                        }`}>
+                          <span className="px-4 text-white text-lg font-inter border-r border-white/30">
+                            +91
+                          </span>
+                          <input
+                            type="tel"
+                            id={`phoneNumber-${studentNum}`}
+                            value={formData.teamMembers[studentNum - 1].phoneNumber}
+                            onChange={(e) => handleMemberChange(studentNum - 1, 'phoneNumber', e.target.value)}
+                            onFocus={() => handleFocus(`phoneNumber-${studentNum}`)}
+                            onBlur={handleBlur}
+                            required={studentNum <= 3}
+                            pattern="^[0-9]{10}$"
+                            placeholder=" "
+                            title="Enter a valid 10-digit phone number"
+                            className="flex-1 px-4 py-6 text-white placeholder-transparent bg-transparent focus:outline-none font-inter text-lg"
+                          />
+                          <label
+                            htmlFor={`phoneNumber-${studentNum}`}
+                            className={`absolute left-20 transition-all duration-300 pointer-events-none font-moul ${
+                              focusedField === `phoneNumber-${studentNum}` || formData.teamMembers[studentNum - 1].phoneNumber
+                                ? 'text-sm text-green-400 -translate-y-8'
+                                : 'text-lg text-gray-300 top-6'
+                            }`}
+                          >
+                            Phone Number {studentNum <= 3 ? <span className="text-red-500">*</span> : null}
+                          </label>
+                        </div>
+                        {formData.teamMembers[studentNum - 1].phoneNumber && !errors[`teamMembers.${studentNum - 1}.phoneNumber`] && (
+                          <HiCheck className="absolute right-4 top-6 text-green-400 text-xl" />
+                        )}
+                        {errors[`teamMembers.${studentNum - 1}.phoneNumber`] && (
+                          <HiXCircle className="absolute right-4 top-6 text-red-400 text-xl" />
+                        )}
+                      </div>
+                      {errors[`teamMembers.${studentNum - 1}.phoneNumber`] && (
+                        <p className="text-red-400 text-sm mt-2 flex items-center gap-2 animate-in slide-in-from-top-2 duration-300">
+                          <HiXCircle className="text-sm" />
+                          {errors[`teamMembers.${studentNum - 1}.phoneNumber`]}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Email Field */}
+                    <div className="group relative">
+                      <div className={`relative transition-all duration-300 ${
+                        focusedField === `srmMailId-${studentNum}` || formData.teamMembers[studentNum - 1].srmMailId ? 'scale-105' : ''
+                      }`}>
+                        <input
+                          type="email"
+                          id={`srmMailId-${studentNum}`}
+                          value={formData.teamMembers[studentNum - 1].srmMailId}
+                          onChange={(e) => handleMemberChange(studentNum - 1, 'srmMailId', e.target.value)}
+                          onFocus={() => handleFocus(`srmMailId-${studentNum}`)}
+                          onBlur={handleBlur}
+                          required={studentNum <= 3}
+                          pattern="^[a-zA-Z0-9._%+-]+@srmist\\.edu\\.in$"
+                          placeholder=" "
+                          title="Email must be an SRMIST ID ending with @srmist.edu.in"
+                          className={`w-full px-6 py-6 bg-white/10 backdrop-blur-md border-2 rounded-2xl text-white placeholder-transparent focus:outline-none focus:ring-4 focus:ring-green-500/50 transition-all duration-300 font-inter text-lg ${
+                            errors[`teamMembers.${studentNum - 1}.srmMailId`] ? 'border-red-500' : focusedField === `srmMailId-${studentNum}` ? 'border-green-400' : 'border-white/30'
+                          }`}
+                        />
+                        <label
+                          htmlFor={`srmMailId-${studentNum}`}
+                          className={`absolute left-6 transition-all duration-300 pointer-events-none font-moul ${
+                            focusedField === `srmMailId-${studentNum}` || formData.teamMembers[studentNum - 1].srmMailId
+                              ? 'text-sm text-green-400 -translate-y-8'
+                              : 'text-lg text-gray-300 top-6'
+                          }`}
+                        >
+                          SRMIST Email {studentNum <= 3 ? <span className="text-red-500">*</span> : null}
+                        </label>
+                        {formData.teamMembers[studentNum - 1].srmMailId && !errors[`teamMembers.${studentNum - 1}.srmMailId`] && (
+                          <HiCheck className="absolute right-4 top-6 text-green-400 text-xl" />
+                        )}
+                        {errors[`teamMembers.${studentNum - 1}.srmMailId`] && (
+                          <HiXCircle className="absolute right-4 top-6 text-red-400 text-xl" />
+                        )}
+                      </div>
+                      {errors[`teamMembers.${studentNum - 1}.srmMailId`] && (
+                        <p className="text-red-400 text-sm mt-2 flex items-center gap-2 animate-in slide-in-from-top-2 duration-300">
+                          <HiXCircle className="text-sm" />
+                          {errors[`teamMembers.${studentNum - 1}.srmMailId`]}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Submit Button */}
+            <div className="text-center pt-8">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`group relative px-16 py-6 bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 rounded-full text-white font-monsterrat text-2xl font-bold overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none ${
+                  isSubmitting ? 'animate-pulse' : ''
+                }`}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <span className="relative flex items-center justify-center gap-3">
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Registering Team...
+                    </>
+                  ) : (
+                    <>
+                      <HiSparkles className="text-2xl animate-pulse" />
+                      Register Team for Debug
+                      <img
+                        src="/alexaverse2.0/right-arrow.png"
+                        alt="Arrow"
+                        className="w-6 h-6 object-contain filter invert transition-transform group-hover:translate-x-1"
+                      />
+                    </>
+                  )}
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
       </section>
     </>
   );
