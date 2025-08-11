@@ -322,7 +322,7 @@ const RegisterWorkshop: React.FC = () => {
               <HiSparkles className="text-4xl text-blue-400 animate-pulse" />
             </div>
             <p className="text-xl text-gray-300 font-inter max-w-2xl mx-auto">
-              Ready to dive deep into Generative AI? Register now and unlock the secrets of tomorrow's technology!
+              Ready to dive deep into Generative AI? Register now and unlock the secrets of tomorrow&apos;s technology!
             </p>
           </div>
 
