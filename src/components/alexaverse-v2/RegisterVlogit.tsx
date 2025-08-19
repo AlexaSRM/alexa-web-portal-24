@@ -10,6 +10,7 @@ const RegisterVlogit: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<string>("");
   const [submitSuccess, setSubmitSuccess] = useState<boolean | null>(null);
+  const whatsAppJoinUrl = "https://join-vlogit.alexadevsrm.org";
   const [formData, setFormData] = useState<IndividualRegistration>({
     name: "",
     registrationNumber: "",
@@ -285,6 +286,29 @@ const RegisterVlogit: React.FC = () => {
               : 'bg-red-100 border border-red-400 text-red-700'
           }`}>
             {submitMessage}
+          </div>
+        )}
+
+        {submitSuccess && (
+          <div className="mb-10 w-full max-w-2xl mx-auto border border-green-400 bg-green-50 rounded-lg p-6 text-center">
+            <p className="text-green-800 font-semibold mb-4">
+              Registration successful! Join the WhatsApp group using the QR code or the link below.
+            </p>
+            <div className="flex items-center justify-center mb-4">
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(whatsAppJoinUrl)}`}
+                alt="Join WhatsApp group QR"
+                className="w-60 h-60 bg-white p-2 rounded"
+              />
+            </div>
+            <a
+              href={whatsAppJoinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-green-900 underline break-all"
+            >
+              {whatsAppJoinUrl}
+            </a>
           </div>
         )}
 
