@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
 import { registerForVlogit, IndividualRegistration, ApiResponse } from "@/lib/api";
+import QRCode from "react-qr-code";
 
 const RegisterVlogit: React.FC = () => {
   const [mounted, setMounted] = useState(false);
@@ -290,25 +291,41 @@ const RegisterVlogit: React.FC = () => {
         )}
 
         {submitSuccess && (
-          <div className="mb-10 w-full max-w-2xl mx-auto border border-green-400 bg-green-50 rounded-lg p-6 text-center">
-            <p className="text-green-800 font-semibold mb-4">
-              Registration successful! Join the WhatsApp group using the QR code or the link below.
-            </p>
-            <div className="flex items-center justify-center mb-4">
-              <img
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(whatsAppJoinUrl)}`}
-                alt="Join WhatsApp group QR"
-                className="w-60 h-60 bg-white p-2 rounded"
-              />
+          <div className="mb-10 w-full max-w-2xl mx-auto">
+            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#240046]/70 via-[#0a0f2d]/70 to-[#001220]/70 p-6 shadow-[0_10px_40px_rgba(0,0,0,0.45)]">
+              <div className="pointer-events-none absolute -top-16 -left-16 h-56 w-56 rounded-full bg-fuchsia-500/20 blur-3xl"></div>
+              <div className="pointer-events-none absolute -bottom-20 -right-16 h-64 w-64 rounded-full bg-cyan-400/20 blur-3xl"></div>
+
+              <p className="relative z-10 text-center text-white font-semibold mb-6">
+                Registration successful! Join the WhatsApp group using the QR code or the link below.
+              </p>
+
+              <div className="relative z-10 mx-auto flex flex-col items-center gap-4">
+                <div className="rounded-2xl p-[3px] bg-gradient-to-tr from-fuchsia-500 via-cyan-400 to-yellow-300">
+                  <div className="rounded-xl bg-white p-4">
+                    <QRCode value={whatsAppJoinUrl} size={220} style={{ height: "auto", maxWidth: "100%", width: "220px" }} />
+                  </div>
+                </div>
+
+                <div className="mt-3 flex items-center gap-3">
+                  <a
+                    href={whatsAppJoinUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white underline decoration-cyan-300/70 underline-offset-4 break-all"
+                  >
+                    {whatsAppJoinUrl}
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => navigator.clipboard.writeText(whatsAppJoinUrl)}
+                    className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm text-white hover:bg-white/20 transition"
+                  >
+                    Copy
+                  </button>
+                </div>
+              </div>
             </div>
-            <a
-              href={whatsAppJoinUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-green-900 underline break-all"
-            >
-              {whatsAppJoinUrl}
-            </a>
           </div>
         )}
 
