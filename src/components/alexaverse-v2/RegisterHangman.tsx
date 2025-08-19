@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { HiMenu, HiX } from "react-icons/hi";
 import { registerForHangman, TeamRegistration, TeamMember, ApiResponse } from "@/lib/api";
 
@@ -137,9 +138,11 @@ const RegisterHangman: React.FC = () => {
       >
         <div className="flex justify-between items-center h-[74px]">
           
-          <img
+          <Image
             src="/alexaverse2.0/alexa-logo-navbar.svg"
             alt="Alexa Logo"
+            width={120}
+            height={48}
             className="h-10 sm:h-12 w-auto"
           />
 
@@ -265,30 +268,38 @@ const RegisterHangman: React.FC = () => {
               </p>
             </div>
           </div>
-          <img
+          <Image
             src="/alexaverse2.0/hangman-img.svg"
             alt="Hangman Image"
+            width={1200}
+            height={400}
             className="absolute top-[4.8vw] left-[-14.4vw] w-[76.8vw] h-[19.8vw] object-contain rounded-[2.1vw]"
           />
           <div
             className="relative top-[26.4vw] left-[15vw] w-[18.6vw] h-[4.32vw] rounded-[3.12vw] border-[0.06vw] border-white backdrop-blur-[5vw] bg-[linear-gradient(122.72deg,rgba(144,144,144,0.25)_1.74%,rgba(63,63,63,0.25)_1.75%,rgba(204,204,204,0.25)_33.05%,rgba(140,140,140,0.25)_97.16%)]"
           >
-            <img
+            <Image
               src="/alexaverse2.0/rewind-button.png"
               alt="Rewind Button"
+              width={40}
+              height={40}
               className="absolute left-[0.96vw] top-1/2 -translate-y-1/2 w-[1.92vw] h-[2.52vw] object-contain invert"
             />
-            <img
+            <Image
               src="/alexaverse2.0/fast-forward-button.png"
               alt="Fast Forward Button"
+              width={40}
+              height={40}
               className="absolute left-[15.96vw] top-1/2 -translate-y-1/2 w-[1.92vw] h-[2.52vw] object-contain invert"
             />
             <div
               className="absolute left-[9.36vw] top-[2.16vw] -translate-x-1/2 -translate-y-1/2 w-[9.36vw] h-[5.04vw] rounded-[3.12vw] border-[0.06vw] border-white backdrop-blur-[5vw] bg-white"
             >
-              <img
+              <Image
                 src="/alexaverse2.0/play-button.png"
                 alt="Play Button"
+                width={120}
+                height={40}
                 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[6.24vw] h-[1.92vw] object-contain"
               />
             </div>
@@ -491,9 +502,11 @@ const RegisterHangman: React.FC = () => {
             }`}
           >
             {isSubmitting ? 'Registering Team...' : 'Register Team'}
-            <img
+            <Image
               src="/alexaverse2.0/right-arrow.png"
               alt="Arrow"
+              width={24}
+              height={24}
               className="w-6 h-6 object-contain filter invert ml-auto"
             />
           </button>

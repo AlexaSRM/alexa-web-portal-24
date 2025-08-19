@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import EventCard from "./MobileEventCard";
@@ -184,23 +185,29 @@ const OurEvents: React.FC = () => {
             </div>
           </div>
           
-          <img
+          <Image
             src="/alexaverse2.0/ideathon-img.svg"
             alt="Ideathon Image"
+            width={1200}
+            height={400}
             className="absolute top-[4.8vw] left-[-14.4vw] w-[76.8vw] h-[19.8vw] object-contain rounded-[2.1vw] select-none pointer-events-none"
           />
           
           <div
             className="relative top-[26.4vw] left-[15vw] w-[18.6vw] h-[4.32vw] rounded-[3.12vw] border-[0.06vw] border-white backdrop-blur-[5vw] bg-[linear-gradient(122.72deg,rgba(144,144,144,0.25)_1.74%,rgba(63,63,63,0.25)_1.75%,rgba(204,204,204,0.25)_33.05%,rgba(140,140,140,0.25)_97.16%)]"
           >
-            <img
+            <Image
               src="/alexaverse2.0/rewind-button.png"
               alt="Rewind Button"
+              width={40}
+              height={40}
               className="absolute left-[0.96vw] top-1/2 -translate-y-1/2 w-[1.92vw] h-[2.52vw] object-contain invert"
             />
-            <img
+            <Image
               src="/alexaverse2.0/fast-forward-button.png"
               alt="Fast Forward Button"
+              width={40}
+              height={40}
               className="absolute left-[15.96vw] top-1/2 -translate-y-1/2 w-[1.92vw] h-[2.52vw] object-contain invert"
             />
             
@@ -285,23 +292,29 @@ const OurEvents: React.FC = () => {
             </div>
           </div>
           
-          <img
+          <Image
             src="/alexaverse2.0/workshop-img.svg"
             alt="Workshop Image"
+            width={1200}
+            height={400}
             className="absolute top-[4.8vw] left-[-14.4vw] w-[76.8vw] h-[19.8vw] object-contain rounded-[2.1vw] select-none pointer-events-none"
           />
          
           <div
             className="relative top-[26.4vw] left-[15vw] w-[18.6vw] h-[4.32vw] rounded-[3.12vw] border-[0.06vw] border-white backdrop-blur-[5vw] bg-[linear-gradient(122.72deg,rgba(144,144,144,0.25)_1.74%,rgba(63,63,63,0.25)_1.75%,rgba(204,204,204,0.25)_33.05%,rgba(140,140,140,0.25)_97.16%)]"
           >
-            <img
+            <Image
               src="/alexaverse2.0/rewind-button.png"
               alt="Rewind Button"
+              width={40}
+              height={40}
               className="absolute left-[0.96vw] top-1/2 -translate-y-1/2 w-[1.92vw] h-[2.52vw] object-contain invert"
             />
-            <img
+            <Image
               src="/alexaverse2.0/fast-forward-button.png"
               alt="Fast Forward Button"
+              width={40}
+              height={40}
               className="absolute left-[15.96vw] top-1/2 -translate-y-1/2 w-[1.92vw] h-[2.52vw] object-contain invert"
             />
             
@@ -387,23 +400,29 @@ const OurEvents: React.FC = () => {
             </div>
           </div>
           
-          <img
+          <Image
             src="/alexaverse2.0/vlogit-img.svg"
             alt="Vlogit Image"
+            width={1200}
+            height={400}
             className="absolute top-[4.8vw] left-[-14.4vw] w-[76.8vw] h-[19.8vw] object-contain rounded-[2.1vw] select-none pointer-events-none"
           />
          
           <div
             className="relative top-[26.4vw] left-[15vw] w-[18.6vw] h-[4.32vw] rounded-[3.12vw] border-[0.06vw] border-white backdrop-blur-[5vw] bg-[linear-gradient(122.72deg,rgba(144,144,144,0.25)_1.74%,rgba(63,63,63,0.25)_1.75%,rgba(204,204,204,0.25)_33.05%,rgba(140,140,140,0.25)_97.16%)]"
           >
-            <img
+            <Image
               src="/alexaverse2.0/rewind-button.png"
               alt="Rewind Button"
+              width={40}
+              height={40}
               className="absolute left-[0.96vw] top-1/2 -translate-y-1/2 w-[1.92vw] h-[2.52vw] object-contain invert"
             />
-            <img
+            <Image
               src="/alexaverse2.0/fast-forward-button.png"
               alt="Fast Forward Button"
+              width={40}
+              height={40}
               className="absolute left-[15.96vw] top-1/2 -translate-y-1/2 w-[1.92vw] h-[2.52vw] object-contain invert"
             />
             
@@ -490,23 +509,29 @@ const OurEvents: React.FC = () => {
             </div>
           </div>
           
-          <img
+          <Image
             src="/alexaverse2.0/debug-img.svg"
             alt="Debug Image"
+            width={1200}
+            height={400}
             className="absolute top-[4.8vw] left-[-14.4vw] w-[76.8vw] h-[19.8vw] object-contain rounded-[2.1vw] select-none pointer-events-none"
           />
         
           <div
             className="relative top-[26.4vw] left-[15vw] w-[18.6vw] h-[4.32vw] rounded-[3.12vw] border-[0.06vw] border-white backdrop-blur-[5vw] bg-[linear-gradient(122.72deg,rgba(144,144,144,0.25)_1.74%,rgba(63,63,63,0.25)_1.75%,rgba(204,204,204,0.25)_33.05%,rgba(140,140,140,0.25)_97.16%)]"
           >
-            <img
+            <Image
               src="/alexaverse2.0/rewind-button.png"
               alt="Rewind Button"
+              width={40}
+              height={40}
               className="absolute left-[0.96vw] top-1/2 -translate-y-1/2 w-[1.92vw] h-[2.52vw] object-contain invert"
             />
-            <img
+            <Image
               src="/alexaverse2.0/fast-forward-button.png"
               alt="Fast Forward Button"
+              width={40}
+              height={40}
               className="absolute left-[15.96vw] top-1/2 -translate-y-1/2 w-[1.92vw] h-[2.52vw] object-contain invert"
             />
             
@@ -592,23 +617,29 @@ const OurEvents: React.FC = () => {
             </div>
           </div>
           
-          <img
+          <Image
             src="/alexaverse2.0/hangman-img.svg"
             alt="Hangman Image"
+            width={1200}
+            height={400}
             className="absolute top-[4.8vw] left-[-14.4vw] w-[76.8vw] h-[19.8vw] object-contain rounded-[2.1vw] select-none pointer-events-none"
           />
           
           <div
             className="relative top-[26.4vw] left-[15vw] w-[18.6vw] h-[4.32vw] rounded-[3.12vw] border-[0.06vw] border-white backdrop-blur-[5vw] bg-[linear-gradient(122.72deg,rgba(144,144,144,0.25)_1.74%,rgba(63,63,63,0.25)_1.75%,rgba(204,204,204,0.25)_33.05%,rgba(140,140,140,0.25)_97.16%)]"
           >
-            <img
+            <Image
               src="/alexaverse2.0/rewind-button.png"
               alt="Rewind Button"
+              width={40}
+              height={40}
               className="absolute left-[0.96vw] top-1/2 -translate-y-1/2 w-[1.92vw] h-[2.52vw] object-contain invert"
             />
-            <img
+            <Image
               src="/alexaverse2.0/fast-forward-button.png"
               alt="Fast Forward Button"
+              width={40}
+              height={40}
               className="absolute left-[15.96vw] top-1/2 -translate-y-1/2 w-[1.92vw] h-[2.52vw] object-contain invert"
             />
            
