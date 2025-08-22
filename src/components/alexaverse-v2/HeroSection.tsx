@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { HiMenu, HiX } from "react-icons/hi";
 import { useRouter } from "next/navigation";
 
@@ -75,9 +76,11 @@ const HeroSection: React.FC = () => {
       >
         <div className="flex justify-between items-center h-[74px]">
           
-          <img
+          <Image
             src="/alexaverse2.0/alexa-logo-navbar.svg"
             alt="Alexa Logo"
+            width={120}
+            height={48}
             className="h-10 sm:h-12 w-auto"
           />
 
@@ -314,9 +317,11 @@ const HeroSection: React.FC = () => {
       >
         {/* CD Image - Left Bottom Corner - Increased Mobile Size */}
         <div className="absolute bottom-0 left-0 z-10">
-          <img
+          <Image
             src="/alexaverse2.0/cd-record.png"
             alt="Vinyl Record"
+            width={224}
+            height={224}
             className="w-24 h-24 xs:w-28 xs:h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 xl:w-48 xl:h-48 2xl:w-56 2xl:h-56 object-contain object-bottom-left opacity-80 hover:opacity-100 transition-all duration-300 hover:scale-105"
             style={{
               filter: "drop-shadow(0 0 20px rgba(255, 20, 147, 0.3))",
@@ -328,9 +333,11 @@ const HeroSection: React.FC = () => {
 
         {/* Microphone Image - Right Bottom Corner - Increased Mobile Size */}
         <div className="absolute bottom-0 right-0 z-10">
-          <img
+          <Image
             src="/alexaverse2.0/microphone.png"
             alt="Vintage Microphone"
+            width={224}
+            height={224}
             className="w-24 h-24 xs:w-28 xs:h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 xl:w-48 xl:h-48 2xl:w-56 2xl:h-56 object-contain object-bottom-right opacity-80 hover:opacity-100 transition-all duration-300 hover:scale-105"
             style={{
               filter: "drop-shadow(0 0 20px rgba(0, 191, 255, 0.3))",
@@ -342,9 +349,11 @@ const HeroSection: React.FC = () => {
 
         {/* Main Logo and Title */}
         <div className="flex flex-col items-center justify-center z-20 px-2 mt-16 sm:mt-20 md:mt-40">
-          <img
+          <Image
             src="/alexaverse2.0/alexaverse-main-logo.png"
             alt="Alexaverse 2.0 - Main Logo"
+            width={350}
+            height={200}
             className="w-full max-w-[240px] sm:max-w-[280px] md:max-w-[280px] lg:max-w-[200px] xl:max-w-[350px] h-auto object-contain drop-shadow-2xl"
             style={{
               filter: "drop-shadow(0px 0px 30px rgba(199, 18, 108, 0.3))"

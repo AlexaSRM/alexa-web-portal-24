@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 
 const ContactUs: React.FC = () => {
   const socialIcons = [
@@ -42,9 +43,11 @@ const ContactUs: React.FC = () => {
       className="w-full min-h-screen text-white flex flex-col items-center justify-center px-4 py-16"
     >
       {/* 🖼️ Alexa Logo for Mobile */}
-      <img
+      <Image
         src="/alexaverse2.0/alexa-logo-contact.svg"
         alt="Alexa Logo"
+        width={180}
+        height={180}
         className="w-[180px] h-[180px] object-contain mb-4 sm:hidden"
       />
 
@@ -66,9 +69,11 @@ const ContactUs: React.FC = () => {
               className="hover:scale-110 transition-transform duration-200"
             >
               <div className="w-[80px] h-[80px] rounded-full bg-gradient-to-br from-[#563AFF] to-[#FF4E78] flex items-center justify-center cursor-pointer">
-                <img
+                <Image
                   src={icon.src}
                   alt={icon.alt}
+                  width={40}
+                  height={40}
                   className="w-[40px] h-[40px] object-contain translate-y-1"
                 />
               </div>
@@ -76,9 +81,11 @@ const ContactUs: React.FC = () => {
           ))}
 
           
-          <img
+          <Image
             src="/alexaverse2.0/alexa-logo-contact.svg"
             alt="Alexa Logo"
+            width={280}
+            height={280}
             className="w-[280px] h-[280px] object-contain"
           />
 
@@ -92,9 +99,11 @@ const ContactUs: React.FC = () => {
               className="hover:scale-110 transition-transform duration-200"
             >
               <div className="w-[80px] h-[80px] rounded-full bg-gradient-to-br from-[#563AFF] to-[#FF4E78] flex items-center justify-center cursor-pointer">
-                <img
+                <Image
                   src={icon.src}
                   alt={icon.alt}
+                  width={40}
+                  height={40}
                   className="w-[40px] h-[40px] object-contain translate-y-1"
                 />
               </div>
@@ -113,9 +122,11 @@ const ContactUs: React.FC = () => {
               className="hover:scale-110 transition-transform duration-200"
             >
               <div className="w-[65px] h-[65px] rounded-full bg-gradient-to-br from-[#563AFF] to-[#FF4E78] flex items-center justify-center cursor-pointer">
-                <img
+                <Image
                   src={icon.src}
                   alt={icon.alt}
+                  width={32}
+                  height={32}
                   className="w-[32px] h-[32px] object-contain translate-y-1"
                 />
               </div>
