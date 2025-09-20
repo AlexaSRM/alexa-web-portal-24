@@ -1,6 +1,17 @@
 'use server'
 
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!, 
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  }
+)
 
 export interface RegistrationData {
   name: string
@@ -48,7 +59,7 @@ export async function registerRecruitment(data: RegistrationData) {
       }
     }
 
-    // Insert into Supabase
+
     const { data: result, error } = await supabase
       .from('recruitment_25')
       .insert([
@@ -68,26 +79,23 @@ export async function registerRecruitment(data: RegistrationData) {
       .select()
 
     if (error) {
-      console.error('Supabase error:', error)
+      // console.error('Insert error:', error)
       
       // Handle duplicate entries
       if (error.code === '23505') {
-        if (error.message.includes('registration_number')) {
-          return {
-            success: false,
-            error: 'This registration number is already registered'
-          }
+        const msg = error.message.toLowerCase()
+
+        if (msg.includes('registration_number')) {
+          return { success: false, error: 'This registration number is already registered' }
         }
-        if (error.message.includes('srmist_email')) {
-          return {
-            success: false,
-            error: 'This email is already registered'
-          }
+        if (msg.includes('srm_mail') || msg.includes('srmist')) {
+          return { success: false, error: 'This SRMIST email is already registered' }
         }
-        return {
-          success: false,
-          error: 'Registration number or email already exists'
+        if (msg.includes('phone_number')) {
+          return { success: false, error: 'This phone number is already registered' }
         }
+
+        return { success: false, error: 'Participant already registered.' }
       }
       
       return {
@@ -96,6 +104,7 @@ export async function registerRecruitment(data: RegistrationData) {
       }
     }
 
+    // console.log('Registration successful:', result)
     return {
       success: true,
       message: 'Registration successful!',
@@ -103,7 +112,7 @@ export async function registerRecruitment(data: RegistrationData) {
     }
 
   } catch (error) {
-    console.error('Registration error:', error)
+    // console.error('Catch error:', error)
     return {
       success: false,
       error: 'An unexpected error occurred. Please try again.'
