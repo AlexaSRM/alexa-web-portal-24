@@ -61,7 +61,8 @@ export async function registerRecruitment(data: RegistrationData) {
           linkedin_link: data.linkedinProfile || '',
           domain1: data.firstDomain,
           domain2: data.secondDomain || null,
-          round: 1
+          domain1_round: 1,
+          domain2_round: 1 || null
         }
       ])
       .select()
