@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function HeroSection() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -17,7 +17,7 @@ export default function HeroSection() {
           className="fixed inset-0 z-[200] flex flex-col items-center justify-between py-16 px-8 lg:hidden"
           style={{
             background:
-              'radial-gradient(ellipse at center, #6b0000 0%, #1a0000 50%, #000000 100%)',
+              "radial-gradient(ellipse at center, #6b0000 0%, #1a0000 50%, #000000 100%)",
           }}
         >
           {/* Close (X) button — top right */}
@@ -65,10 +65,10 @@ export default function HeroSection() {
             className="w-full max-w-[260px] bg-[#C32325] hover:bg-[#a01c1e] text-white py-4 rounded-full font-bold text-xl transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(195,35,37,0.5)]"
             onClick={() => {
               setIsMobileMenuOpen(false);
-              router.push('/recruitment26registerform');
+              router.push("/recruitment26registerform");
             }}
           >
-            Register Now
+            Registrations Closed
           </button>
         </div>
       )}
@@ -138,9 +138,9 @@ export default function HeroSection() {
 
             {/* Register Now */}
             <button
-              onClick={() => router.push('/recruitment26registerform')}
+              onClick={() => router.push("/recruitment26registerform")}
               className="absolute right-0 top-0 w-[29.4%] h-full cursor-pointer rounded-full hover:bg-white/10 transition-colors"
-              aria-label="Register Now"
+              aria-label="Registrations Closed"
             />
           </div>
 
@@ -185,12 +185,12 @@ export default function HeroSection() {
         {/* Bottom Register Now Button */}
         <div className="relative z-10 pb-32 sm:pb-48 flex justify-center w-full">
           <button
-            onClick={() => router.push('/recruitment26registerform')}
+            onClick={() => router.push("/recruitment26registerform")}
             className="hover:scale-105 hover:brightness-110 active:scale-95 transition-all cursor-pointer group"
           >
             <Image
               src="/recruitments26/Register Now button.svg"
-              alt="Register Now"
+              alt="Registrations Closed"
               width={260}
               height={58}
               className="w-[200px] sm:w-[260px] drop-shadow-[0_0_15px_rgba(195,35,37,0.5)] group-hover:drop-shadow-[0_0_25px_rgba(195,35,37,0.8)]"
