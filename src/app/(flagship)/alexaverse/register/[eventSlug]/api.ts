@@ -18,9 +18,6 @@ export async function registerUser(
   formData: MultiRegistrationFormData | SingleRegistrationFormData
 ): Promise<void> {
   try {
-    console.log(
-      process.env.NEXT_ALEXAVERSE_API_URL + `/api/${eventSlug}/register`
-    );
     const response = await axios.post(
       process.env.NEXT_ALEXAVERSE_API_URL + `/api/${eventSlug}/register`,
       formData
@@ -31,7 +28,6 @@ export async function registerUser(
       "Registration failed:",
       error.response.data.message || error.response.data.error.issues[0].message
     );
-    // console.error(error.response.data.error.issues[0].path);
     return error.response.data;
   }
 }

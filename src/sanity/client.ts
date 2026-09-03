@@ -10,10 +10,3 @@ export const client = createClient({
   apiVersion, 
   useCdn: false,
 })
-
-
-// export const client = {
-//   fetch: async () => {
-//     return []; // return empty mock data for now
-//   }
-// };
