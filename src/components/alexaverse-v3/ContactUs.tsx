@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,7 +27,6 @@ const ContactUs = () => {
               className="w-16 h-16 object-contain"
             />
           </Link>
-
           <Link
             href="https://www.linkedin.com/company/alexadevsrm/"
             target="_blank"
@@ -53,9 +51,7 @@ const ContactUs = () => {
             width={240}
             height={240}
             className="w-full h-full object-contain"
-            style={{
-              filter: "drop-shadow(0 4px 20px rgba(253,232,200,0.2))",
-            }}
+            style={{ filter: "drop-shadow(0 4px 20px rgba(253,232,200,0.2))" }}
           />
         </div>
 
@@ -75,7 +71,6 @@ const ContactUs = () => {
               className="w-16 h-16 object-contain"
             />
           </Link>
-
           <Link
             href="mailto:alexadevsrm@gmail.com"
             className="hover:opacity-80 transition-opacity"
@@ -101,9 +96,7 @@ const ContactUs = () => {
             width={200}
             height={200}
             className="w-full h-full object-contain"
-            style={{
-              filter: "drop-shadow(0 4px 20px rgba(253,232,200,0.2))",
-            }}
+            style={{ filter: "drop-shadow(0 4px 20px rgba(253,232,200,0.2))" }}
           />
         </div>
 
@@ -123,7 +116,6 @@ const ContactUs = () => {
               className="w-14 h-14 sm:w-16 sm:h-16 object-contain"
             />
           </Link>
-
           <Link
             href="https://www.linkedin.com/company/alexadevsrm/"
             target="_blank"
@@ -138,7 +130,6 @@ const ContactUs = () => {
               className="w-14 h-14 sm:w-16 sm:h-16 object-contain"
             />
           </Link>
-
           <Link
             href="https://www.facebook.com/alexadevsrm"
             target="_blank"
@@ -153,7 +144,6 @@ const ContactUs = () => {
               className="w-14 h-14 sm:w-16 sm:h-16 object-contain"
             />
           </Link>
-
           <Link
             href="mailto:alexadevsrm@gmail.com"
             className="hover:opacity-80 transition-opacity flex justify-center"
@@ -172,28 +162,21 @@ const ContactUs = () => {
       {/* Contact Us Title */}
       <h2
         className="text-[#DBCCB7] text-4xl sm:text-5xl md:text-6xl tracking-wider mb-8"
-        style={{
-          textShadow: "0 2px 10px rgba(0,0,0,0.8)",
-        }}
+        style={{ textShadow: "0 2px 10px rgba(0,0,0,0.8)" }}
       >
         CONTACT US
       </h2>
 
       {/* Footer text */}
-
       {/* Desktop: single line */}
-      <p className="hidden sm:block text-xs sm:text-sm md:text-base tracking-[0.15em] text-center uppercase">
-        <span style={{ color: "#DED2BC" }}>Designed and Developed by </span>
-
+      <p className="hidden sm:block text-white text-xs sm:text-sm md:text-base tracking-[0.15em] text-center uppercase">
+        Designed and Developed by{" "}
         <span className="font-semibold text-white">Alexa Developers SRM.</span>
       </p>
-
       {/* Mobile: two lines */}
-      <p className="block sm:hidden text-xs tracking-[0.15em] text-center uppercase">
-        <span style={{ color: "#DED2BC" }}>Designed and Developed by</span>
-
+      <p className="block sm:hidden text-white text-xs tracking-[0.15em] text-center uppercase">
+        Designed and Developed by
         <br />
-
         <span className="font-semibold text-white">Alexa Developers SRM.</span>
       </p>
     </section>

@@ -66,11 +66,15 @@ export const metadata: Metadata = {
   title: "AlexaVerse 3.0 | ADS!",
   description: "Created with ♥️ by the ADS team.",
   icons: {
-    icon: "/icon2.png",
+    icon: "/icon3.svg",
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
