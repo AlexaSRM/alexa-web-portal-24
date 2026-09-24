@@ -6,7 +6,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { TeamRegistration, TeamMember } from "@/lib/api";
 
-const STORAGE_KEY = process.env.NEXT_PUBLIC_IDEATHON_REGISTRATION_STORAGE_KEY;
+const STORAGE_KEY = process.env
+  .NEXT_PUBLIC_IDEATHON_REGISTRATION_STORAGE_KEY as string;
 
 const RegisterIdeathon: React.FC = () => {
   const router = useRouter();
@@ -383,8 +384,8 @@ const RegisterIdeathon: React.FC = () => {
           className="flex-shrink-0 hover:opacity-80 transition-opacity"
         >
           <Image
-            src="/alexaverse3.0/icon.svg"
-            alt="Alexa Developers SRM Icon"
+            src="/alexaverse3.0/Alexa Logo.svg"
+            alt="Alexa Developers SRM Logo"
             width={48}
             height={48}
             className="block md:hidden h-8 w-auto object-contain"

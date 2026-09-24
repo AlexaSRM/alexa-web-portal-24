@@ -2,6 +2,9 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+const SECTION_BACKGROUND_COLOR = "#050414";
+const SECTION_BACKGROUND_IMAGE = "/alexaverse3.0/our-events-background.svg";
+const SECTION_VIGNETTE_IMAGE = "/alexaverse3.0/our events-vignette.svg";
 const HEADING_IMAGE = "/alexaverse3.0/our-events-header.svg";
 const REGISTER_BUTTON_IMAGE = "/alexaverse3.0/our-events-register-button.svg";
 
@@ -48,7 +51,7 @@ const registrationButtons: RegistrationButton[] = [
   },
   {
     name: "Workshop",
-    href: "alexaverse-v3/RegisterWorkshop",
+    href: "/alexaverse-v3/RegisterWorkshop",
     desktop: {
       left: "16.4%",
       top: "44.2%",
@@ -62,7 +65,7 @@ const registrationButtons: RegistrationButton[] = [
   },
   {
     name: "Debug the Campus",
-    href: "alexaverse-v3/RegisterDebug",
+    href: "/alexaverse-v3/RegisterDebug",
     desktop: {
       left: "61.9%",
       top: "67.1%",
@@ -76,7 +79,7 @@ const registrationButtons: RegistrationButton[] = [
   },
   {
     name: "Reel It",
-    href: "alexaverse-v3/RegisterReelit",
+    href: "/alexaverse-v3/RegisterReelit",
     desktop: {
       left: "16.7%",
       top: "90.1%",
@@ -103,7 +106,14 @@ function RegisterOverlayButton({
     <Link
       href={button.href}
       aria-label={`Register now for ${button.name}`}
-      className="absolute z-10 block transition-transform duration-200 hover:scale-[1.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a855f7]"
+      className="
+        absolute z-10 block
+        transition-transform duration-200
+        hover:scale-[1.04]
+        focus-visible:outline-none
+        focus-visible:ring-2
+        focus-visible:ring-[#a855f7]
+      "
       style={{
         left: placement.left,
         top: placement.top,
@@ -157,7 +167,28 @@ const OurEvents: React.FC = () => {
     <section
       id="events"
       className="relative w-full overflow-hidden px-4 py-20 sm:px-8 sm:py-24 lg:px-12"
+      style={{ backgroundColor: SECTION_BACKGROUND_COLOR }}
     >
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        <Image
+          src={SECTION_BACKGROUND_IMAGE}
+          alt=""
+          fill
+          className="object-cover object-top origin-top -translate-y-[800px] sm:translate-y-0 sm:object-center"
+        />
+
+        <Image
+          src={SECTION_VIGNETTE_IMAGE}
+          alt=""
+          fill
+          className="object-cover object-center"
+        />
+
+        <div className="absolute top-0 inset-x-0 h-48 bg-gradient-to-b from-black via-black/70 to-transparent" />
+
+        <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-black to-transparent" />
+      </div>
+
       <div className="relative z-10 mx-auto flex w-full max-w-[1200px] flex-col items-center">
         <div className="flex w-full items-center justify-center">
           <Image

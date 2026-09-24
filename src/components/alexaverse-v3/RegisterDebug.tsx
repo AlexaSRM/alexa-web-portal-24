@@ -5,9 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { TeamRegistration, TeamMember } from "@/lib/api";
 
-const STORAGE_KEY = process.env.NEXT_PUBLIC_DEBUG_REGISTRATION_STORAGE_KEY;
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const STORAGE_KEY = process.env
+  .NEXT_PUBLIC_DEBUG_REGISTRATION_STORAGE_KEY as string;
 
 const RegisterDebug: React.FC = () => {
   const [mounted, setMounted] = useState(false);
@@ -259,7 +258,7 @@ const RegisterDebug: React.FC = () => {
         })),
       };
 
-      const response = await fetch(`${API_BASE_URL}/register/team`, {
+      const response = await fetch("/api/alexaverse/register/team", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -337,8 +336,8 @@ const RegisterDebug: React.FC = () => {
           className="flex-shrink-0 hover:opacity-80 transition-opacity"
         >
           <Image
-            src="/alexaverse3.0/icon.svg"
-            alt="Alexa Developers SRM Icon"
+            src="/alexaverse3.0/Alexa Logo.svg"
+            alt="Alexa Developers SRM"
             width={48}
             height={48}
             className="block md:hidden h-8 w-auto object-contain"

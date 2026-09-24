@@ -11,9 +11,8 @@ interface IndividualRegistration {
   phoneNumber: string;
 }
 
-const STORAGE_KEY = process.env.NEXT_PUBLIC_REELIT_REGISTRATION_STORAGE_KEY;
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const STORAGE_KEY = process.env
+  .NEXT_PUBLIC_REELIT_REGISTRATION_STORAGE_KEY as string;
 
 const RegisterReelit: React.FC = () => {
   const [mounted, setMounted] = useState(false);
@@ -153,7 +152,7 @@ const RegisterReelit: React.FC = () => {
         phone: formData.phoneNumber.trim(),
       };
 
-      const response = await fetch(`${API_BASE_URL}/register/solo`, {
+      const response = await fetch("/api/alexaverse/register/solo", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -255,8 +254,8 @@ const RegisterReelit: React.FC = () => {
           className="flex-shrink-0 hover:opacity-80 transition-opacity"
         >
           <Image
-            src="/alexaverse3.0/icon.svg"
-            alt="Alexa Developers SRM Icon"
+            src="/alexaverse3.0/Alexa Logo.svg"
+            alt="Alexa Developers SRM"
             width={48}
             height={48}
             className="block md:hidden h-8 w-auto object-contain"
@@ -273,18 +272,9 @@ const RegisterReelit: React.FC = () => {
 
         <div className="hidden md:flex gap-10 items-center">
           {[
-            {
-              label: "Home",
-              href: "/alexaverse-v3",
-            },
-            {
-              label: "Events",
-              href: "/alexaverse-v3#events",
-            },
-            {
-              label: "Contact Us",
-              href: "#contact",
-            },
+            { label: "Home", href: "/alexaverse-v3" },
+            { label: "Events", href: "/alexaverse-v3#events" },
+            { label: "Contact Us", href: "#contact" },
           ].map(({ label, href }) => (
             <Link
               key={label}
@@ -344,18 +334,9 @@ const RegisterReelit: React.FC = () => {
         </button>
 
         {[
-          {
-            label: "HOME",
-            href: "/alexaverse-v3",
-          },
-          {
-            label: "OUR EVENTS",
-            href: "/alexaverse-v3#events",
-          },
-          {
-            label: "CONTACT US",
-            href: "#contact",
-          },
+          { label: "HOME", href: "/" },
+          { label: "OUR EVENTS", href: "#events" },
+          { label: "CONTACT US", href: "#contact" },
         ].map(({ label, href }) => (
           <Link
             key={label}
