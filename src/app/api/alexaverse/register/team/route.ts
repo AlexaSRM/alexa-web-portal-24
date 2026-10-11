@@ -7,16 +7,6 @@ import { NextResponse } from "next/server";
  * server-only, so the backend origin is not included in browser bundles.
  */
 export async function POST(req: Request) {
-  const apiUrl = process.env.API_URL;
-
-  if (!apiUrl) {
-    console.error("[proxy] API_URL is not set on the server");
-    return NextResponse.json(
-      { success: false, message: "Server configuration error." },
-      { status: 500 },
-    );
-  }
-
   let body: unknown;
   try {
     body = await req.json();
@@ -24,6 +14,28 @@ export async function POST(req: Request) {
     return NextResponse.json(
       { success: false, message: "Invalid request body." },
       { status: 400 },
+    );
+  }
+
+  if (
+    typeof body === "object" &&
+    body !== null &&
+    "event" in body &&
+    body.event === "Ideathon"
+  ) {
+    return NextResponse.json(
+      { success: false, message: "Ideathon registrations are closed." },
+      { status: 410 },
+    );
+  }
+
+  const apiUrl = process.env.API_URL;
+
+  if (!apiUrl) {
+    console.error("[proxy] API_URL is not set on the server");
+    return NextResponse.json(
+      { success: false, message: "Server configuration error." },
+      { status: 500 },
     );
   }
 

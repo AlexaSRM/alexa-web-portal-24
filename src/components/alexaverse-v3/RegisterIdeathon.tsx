@@ -11,6 +11,7 @@ const STORAGE_KEY = process.env
 
 const RegisterIdeathon: React.FC = () => {
   const router = useRouter();
+  const registrationOpen = false;
   const [mounted, setMounted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -319,6 +320,8 @@ const RegisterIdeathon: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!registrationOpen) return;
+
     setSubmitMessage("");
     setSubmitSuccess(null);
     setErrors({});
@@ -551,10 +554,11 @@ const RegisterIdeathon: React.FC = () => {
                   type="text"
                   id="teamName"
                   name="teamName"
-                  value={formData.teamName}
+                  disabled={!registrationOpen}
+                  value={registrationOpen ? formData.teamName : ""}
                   onChange={handleTeamNameChange}
-                  placeholder="Enter team name"
-                  className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500 text-black bg-white ${
+                  placeholder="Registrations Closed"
+                  className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500 text-gray-600 bg-gray-400 cursor-not-allowed ${
                     errors.teamName ? "border-red-500" : "border-gray-400"
                   }`}
                 />
@@ -595,7 +599,12 @@ const RegisterIdeathon: React.FC = () => {
                     <input
                       type="text"
                       id={`name-${studentNum}`}
-                      value={formData.teamMembers[studentNum - 1].name}
+                      disabled={!registrationOpen}
+                      value={
+                        registrationOpen
+                          ? formData.teamMembers[studentNum - 1].name
+                          : ""
+                      }
                       onChange={(e) =>
                         handleMemberChange(
                           studentNum - 1,
@@ -603,8 +612,8 @@ const RegisterIdeathon: React.FC = () => {
                           e.target.value,
                         )
                       }
-                      placeholder="Name"
-                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500 text-black bg-white ${
+                      placeholder="Registrations Closed"
+                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500 text-gray-600 bg-gray-400 cursor-not-allowed ${
                         errors[`teamMembers.${studentNum - 1}.name`]
                           ? "border-red-500"
                           : "border-gray-400"
@@ -632,8 +641,12 @@ const RegisterIdeathon: React.FC = () => {
                     <input
                       type="text"
                       id={`registrationNumber-${studentNum}`}
+                      disabled={!registrationOpen}
                       value={
-                        formData.teamMembers[studentNum - 1].registrationNumber
+                        registrationOpen
+                          ? formData.teamMembers[studentNum - 1]
+                              .registrationNumber
+                          : ""
                       }
                       onChange={(e) =>
                         handleMemberChange(
@@ -642,8 +655,8 @@ const RegisterIdeathon: React.FC = () => {
                           e.target.value,
                         )
                       }
-                      placeholder="RAXXXXXXXXXXXXX"
-                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500 text-black bg-white ${
+                      placeholder="Registrations Closed"
+                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500 text-gray-600 bg-gray-400 cursor-not-allowed ${
                         errors[
                           `teamMembers.${studentNum - 1}.registrationNumber`
                         ]
@@ -677,20 +690,25 @@ const RegisterIdeathon: React.FC = () => {
                     </label>
 
                     <div
-                      className={`w-full flex items-center border rounded bg-white focus-within:ring-2 focus-within:ring-purple-500 overflow-hidden ${
+                      className={`w-full flex items-center border rounded bg-gray-400 focus-within:ring-2 focus-within:ring-purple-500 overflow-hidden cursor-not-allowed ${
                         errors[`teamMembers.${studentNum - 1}.phoneNumber`]
                           ? "border-red-500"
                           : "border-gray-400"
                       }`}
                     >
-                      <span className="px-2 sm:px-3 text-black text-md border-r border-gray-400">
+                      <span className="px-2 sm:px-3 text-gray-600 text-md border-r border-gray-400">
                         +91&nbsp;
                       </span>
 
                       <input
                         type="tel"
                         id={`phoneNumber-${studentNum}`}
-                        value={formData.teamMembers[studentNum - 1].phoneNumber}
+                        disabled={!registrationOpen}
+                        value={
+                          registrationOpen
+                            ? formData.teamMembers[studentNum - 1].phoneNumber
+                            : ""
+                        }
                         onChange={(e) =>
                           handleMemberChange(
                             studentNum - 1,
@@ -698,8 +716,8 @@ const RegisterIdeathon: React.FC = () => {
                             e.target.value,
                           )
                         }
-                        placeholder="0123456789"
-                        className="flex-1 px-2 sm:px-3 py-3 sm:py-4 text-black placeholder-gray-500 bg-white focus:outline-none"
+                        placeholder="Registrations Closed"
+                        className="flex-1 px-2 sm:px-3 py-3 sm:py-4 text-gray-600 placeholder-gray-500 bg-gray-400 focus:outline-none cursor-not-allowed"
                       />
                     </div>
 
@@ -724,7 +742,12 @@ const RegisterIdeathon: React.FC = () => {
                     <input
                       type="email"
                       id={`srmMailId-${studentNum}`}
-                      value={formData.teamMembers[studentNum - 1].srmMailId}
+                      disabled={!registrationOpen}
+                      value={
+                        registrationOpen
+                          ? formData.teamMembers[studentNum - 1].srmMailId
+                          : ""
+                      }
                       onChange={(e) =>
                         handleMemberChange(
                           studentNum - 1,
@@ -732,8 +755,8 @@ const RegisterIdeathon: React.FC = () => {
                           e.target.value,
                         )
                       }
-                      placeholder="ab1234@srmist.edu.in"
-                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500 text-black bg-white ${
+                      placeholder="Registrations Closed"
+                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500 text-gray-600 bg-gray-400 cursor-not-allowed ${
                         errors[`teamMembers.${studentNum - 1}.srmMailId`]
                           ? "border-red-500"
                           : "border-gray-400"
@@ -760,32 +783,30 @@ const RegisterIdeathon: React.FC = () => {
 
             <button
               type="submit"
-              disabled={isSubmitting || submitSuccess === true}
-              className={`relative mx-auto flex w-full max-w-[400px] items-center justify-center transition duration-300 ${
-                isSubmitting || submitSuccess === true
-                  ? "opacity-70 cursor-not-allowed"
-                  : "cursor-pointer hover:scale-105"
-              }`}
+              disabled={
+                !registrationOpen || isSubmitting || submitSuccess === true
+              }
+              className="relative mx-auto flex w-full max-w-[400px] cursor-not-allowed items-center justify-center transition duration-300"
             >
               <Image
                 src="/alexaverse3.0/register-btn.svg"
-                alt="Register Team"
+                alt="Registrations Closed"
                 width={500}
                 height={200}
                 className="w-full h-auto object-contain"
               />
 
               <span
-                className="absolute inset-0 flex items-center justify-center text-black font-bold text-3xl sm:text-4xl tracking-[2px]"
+                className="absolute inset-0 flex items-center justify-center text-center text-black text-2xl sm:text-3xl tracking-[2px]"
                 style={{
                   fontFamily: "'Cinzel', serif",
                 }}
               >
-                {isSubmitting
-                  ? "REGISTERING"
-                  : submitSuccess
-                    ? "REGISTERED"
-                    : "REGISTER"}
+                <>
+                  Registrations
+                  <br />
+                  Closed
+                </>
               </span>
             </button>
 
